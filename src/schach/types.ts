@@ -29,5 +29,5 @@ type Brett = [
   [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
   [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
   [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
-  [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld]
+  [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
 ];
