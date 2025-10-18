@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Schachmeister is an educational Vite + React + TypeScript project. Source lives in `src/`, with `main.tsx` bootstrapping the UI from `src/ui/App.tsx`. All agent-owned components and styles live in `src/ui`, while the kids own `src/schach` for models and rules (treat it as read-only). Assets live in `src/assets`, builds emit to `dist/`, and static files stay in `public/`. Styling uses Tailwind.
+Schachmeister is an educational Vite + React app. `main.tsx` mounts `src/ui/App.tsx`. Agents own everything in `src/ui`; the kids guard `src/schach` (treat it as read-only). Share test setup from `src/test` and keep UI specs in `src/ui/__tests__`. Assets go under `src/assets`, builds land in `dist/`, and static files stay in `public/`. Styling uses Tailwind.
 
 ## Educational Mission & Collaboration Boundaries
 
@@ -17,11 +17,11 @@ Protect the teaching goal behind this repo. Never modify `src/schach` unless the
 
 ## Coding Style & Naming Conventions
 
-Use TypeScript everywhere; prefer explicit exported types as in `src/schach/types.ts`. Components stay functional, typed through props, and placed in `src/ui`. Indent with two spaces and keep double-quoted strings to match Prettier defaults. Tailwind utility classes should express styling inline, with shared patterns extracted through presentational wrappers when repetition shows up—avoid resurrecting standalone CSS unless Tailwind cannot cover the use case. Game-domain names are German (`brett`, `figur`); respect that vocabulary and let the kids drive any renames in their domain files.
+Use TypeScript everywhere with explicit exports as in `src/schach/types.ts`. Keep components functional, prop-typed, and housed in `src/ui`. Indent with two spaces, prefer double quotes. Style with Tailwind utilities; extract wrappers only when repetition appears—avoid new CSS files unless Tailwind truly falls short. Preserve the German domain names (`brett`, `figur`) and let the kids propose renames.
 
 ## Testing Guidelines
 
-No automated test runner ships yet, so lean on `npm run build` and manual board interaction in dev preview. For logic-heavy additions, jot TypeScript helpers that describe expected moves and propose `vitest` when the curriculum allows. Whatever approach you use, document new test commands and ensure build passes.
+Vitest (with jsdom) plus React Testing Library power the UI checks. Use `npm run test` for single runs or `npm run test:watch` while iterating, and keep specs near the UI they cover under `src/ui/__tests__`. Extend assertions via `src/test/setup.ts`, and focus on accessibility labels or rendered state rather than chess rules (those stay in the kids' domain). Always make sure `npm run build` still succeeds before handing off work.
 
 ## Commit & Pull Request Guidelines
 
