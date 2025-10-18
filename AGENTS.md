@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-Schachmeister is an educational Vite + React + TypeScript project. Source lives in `src/`, with `main.tsx` bootstrapping the UI from `src/ui/App.tsx`. All agent-owned components and styles live in `src/ui`, while the kids own `src/schach` for models and rules (treat it as read-only). Global styles live in `index.css`, assets in `src/assets`, builds emit to `dist/`, and static files stay in `public/`.
+Schachmeister is an educational Vite + React + TypeScript project. Source lives in `src/`, with `main.tsx` bootstrapping the UI from `src/ui/App.tsx`. All agent-owned components and styles live in `src/ui`, while the kids own `src/schach` for models and rules (treat it as read-only). Assets live in `src/assets`, builds emit to `dist/`, and static files stay in `public/`. Styling uses Tailwind.
 
 ## Educational Mission & Collaboration Boundaries
 
@@ -17,7 +17,7 @@ Protect the teaching goal behind this repo. Never modify `src/schach` unless the
 
 ## Coding Style & Naming Conventions
 
-Use TypeScript everywhere; prefer explicit exported types as in `src/schach/types.ts`. Components stay functional, typed through props, and placed in `src/ui`. Indent with two spaces and keep double-quoted strings to match Prettier defaults. CSS classes follow the existing BEM-like structure (`app__title`, `square--dark`). Game-domain names are intentionally German (`brett`, `figur`); respect that vocabulary and let the kids drive any renames in their domain files.
+Use TypeScript everywhere; prefer explicit exported types as in `src/schach/types.ts`. Components stay functional, typed through props, and placed in `src/ui`. Indent with two spaces and keep double-quoted strings to match Prettier defaults. Tailwind utility classes should express styling inline, with shared patterns extracted through presentational wrappers when repetition shows up—avoid resurrecting standalone CSS unless Tailwind cannot cover the use case. Game-domain names are German (`brett`, `figur`); respect that vocabulary and let the kids drive any renames in their domain files.
 
 ## Testing Guidelines
 
