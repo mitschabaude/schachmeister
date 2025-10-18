@@ -1,6 +1,6 @@
 import "./App.css";
 import type { Brett } from "./schach/types";
-import { Chessboard } from "./schach/Chessboard";
+import { Chessboard } from "./ui/Chessboard";
 
 const startBrett: Brett = [
   [

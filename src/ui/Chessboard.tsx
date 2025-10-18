@@ -1,4 +1,4 @@
-import type { Brett, Figur } from "./types";
+import type { Brett, Figur } from "../schach/types";
 import "./Chessboard.css";
 
 type ChessboardProps = {
