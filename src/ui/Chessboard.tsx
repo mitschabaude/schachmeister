@@ -1,19 +1,19 @@
-import type { Brett, Figur } from "../schach/types";
+import type { Brett, Figur, Status } from "../schach/types";
 
-type ChessboardProps = {
-  brett: Brett;
-};
+const pieceFontStack =
+  '"Noto Sans Symbols","DejaVu Sans","Segoe UI Symbol","Noto Sans","sans-serif"';
+const asTextGlyph = (symbol: string) => `${symbol}\uFE0E`;
 
 const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
-  bauer: { w: "♙", b: "♟" },
-  laeufer: { w: "♗", b: "♝" },
-  pferd: { w: "♘", b: "♞" },
-  turm: { w: "♖", b: "♜" },
-  dame: { w: "♕", b: "♛" },
-  koenig: { w: "♔", b: "♚" },
+  bauer: { w: asTextGlyph("♟"), b: asTextGlyph("♟") },
+  laeufer: { w: asTextGlyph("♝"), b: asTextGlyph("♝") },
+  pferd: { w: asTextGlyph("♞"), b: asTextGlyph("♞") },
+  turm: { w: asTextGlyph("♜"), b: asTextGlyph("♜") },
+  dame: { w: asTextGlyph("♛"), b: asTextGlyph("♛") },
+  koenig: { w: asTextGlyph("♚"), b: asTextGlyph("♚") },
 };
 
-export function Chessboard({ brett }: ChessboardProps) {
+export function Chessboard({ brett }: Status) {
   return (
     <div
       className="grid [grid-template-columns:repeat(8,4rem)] [grid-template-rows:repeat(8,4rem)] overflow-hidden rounded-xl border-4 border-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.2)]"
@@ -24,6 +24,8 @@ export function Chessboard({ brett }: ChessboardProps) {
         reihe.map((feld, spaltenIndex) => {
           const istDunkel = (reihenIndex + spaltenIndex) % 2 === 1;
           const symbol = feld !== undefined ? pieceSymbols[feld.art][feld.farbe] : "";
+          const pieceColorClass =
+            feld !== undefined ? (feld.farbe === "w" ? "text-white" : "text-slate-900") : "";
 
           const ariaLabel =
             feld !== undefined
@@ -43,7 +45,20 @@ export function Chessboard({ brett }: ChessboardProps) {
               role="gridcell"
               aria-label={ariaLabel}
             >
-              {symbol}
+              {feld !== undefined ? (
+                <span
+                  className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass}`}
+                  style={{
+                    color: feld.farbe === "w" ? "#ffffff" : "#0f172a",
+                    fontFamily: pieceFontStack,
+                    fontVariant: "normal",
+                    WebkitTextFillColor: feld.farbe === "w" ? "#ffffff" : "#0f172a",
+                  }}
+                  aria-hidden="true"
+                >
+                  {symbol}
+                </span>
+              ) : null}
             </div>
           );
         }),
