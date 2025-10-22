@@ -1,5 +1,5 @@
-import type { Brett } from "./schach/types";
-import { Chessboard } from "./ui/Chessboard";
+import type { Brett } from "../schach/types";
+import { Chessboard } from "./Chessboard";
 
 const startBrett: Brett = [
   [
@@ -54,9 +54,7 @@ function App() {
       <div className="flex max-w-xl flex-col items-center gap-6 text-center text-stone-700">
         <div>
           <h1 className="text-4xl font-semibold tracking-tight text-stone-800">Schachmeister</h1>
-          <p className="mt-2 text-base text-stone-600">
-            Das Brett steht bereit – die Partie kann warten.
-          </p>
+          <p className="mt-2 text-base text-stone-600">Das Brett steht bereit – die Partie kann warten.</p>
         </div>
         <Chessboard brett={startBrett} />
       </div>
