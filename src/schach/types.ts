@@ -1,4 +1,4 @@
-export type { Figur, Brett };
+export type { Figur, Brett, Status, Zug };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
 type Farbe = "w" | "b";
@@ -31,3 +31,17 @@ type Brett = [
   [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
   [Feld, Feld, Feld, Feld, Feld, Feld, Feld, Feld],
 ];
+
+type Status = {
+  brett: Brett;
+  amZug: Farbe;
+};
+
+// 0 bis 7 für Reihen und Spalten
+type Position = { reihe: number; spalte: number };
+
+type Zug = {
+  figur: Figur;
+  von: Position;
+  nach: Position;
+};
