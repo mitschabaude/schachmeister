@@ -1,6 +1,4 @@
 import type { Figur, Status } from "../schach/types";
-
-const pieceFontStack = '"Noto Sans Symbols","DejaVu Sans","Segoe UI Symbol","Noto Sans","sans-serif"';
 const asTextGlyph = (symbol: string) => `${symbol}\uFE0E`;
 
 const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
@@ -49,9 +47,6 @@ export function Chessboard({ brett }: Status) {
                   className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass}`}
                   style={{
                     color: feld.farbe === "w" ? "#ffffff" : "#0f172a",
-                    fontFamily: pieceFontStack,
-                    fontVariant: "normal",
-                    WebkitTextFillColor: feld.farbe === "w" ? "#ffffff" : "#0f172a",
                   }}
                   aria-hidden="true"
                 >
