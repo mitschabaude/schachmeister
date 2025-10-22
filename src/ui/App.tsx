@@ -56,7 +56,7 @@ function App() {
           <h1 className="text-4xl font-semibold tracking-tight text-stone-800">Schachmeister</h1>
           <p className="mt-2 text-base text-stone-600">Das Brett steht bereit – die Partie kann warten.</p>
         </div>
-        <Chessboard brett={startBrett} />
+        <Chessboard brett={startBrett} amZug="w" />
       </div>
     </div>
   );
