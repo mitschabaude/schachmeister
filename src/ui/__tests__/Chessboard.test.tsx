@@ -57,8 +57,13 @@ describe("Chessboard", () => {
     expect(weissesSymbol).not.toBeNull();
 
     expect(schwarzesSymbol).toHaveClass("text-slate-900");
-    expect(schwarzesSymbol).toHaveStyle({ color: "#000000" });
     expect(weissesSymbol).toHaveClass("text-white");
-    expect(weissesSymbol).toHaveStyle({ color: "#ffffff" });
+  });
+
+  it("compiles Tailwind text colors into CSS", async () => {
+    const { default: css } = await import("../../index.css?inline");
+
+    expect(css).toMatch(/\.text-white\s*\{[^}]*color:\s*var\(--color-white\)/);
+    expect(css).toMatch(/\.text-slate-900\s*\{[^}]*color:\s*var\(--color-slate-900\)/);
   });
 });
