@@ -1,7 +1,6 @@
-import type { Brett, Figur, Status } from "../schach/types";
+import type { Figur, Status } from "../schach/types";
 
-const pieceFontStack =
-  '"Noto Sans Symbols","DejaVu Sans","Segoe UI Symbol","Noto Sans","sans-serif"';
+const pieceFontStack = '"Noto Sans Symbols","DejaVu Sans","Segoe UI Symbol","Noto Sans","sans-serif"';
 const asTextGlyph = (symbol: string) => `${symbol}\uFE0E`;
 
 const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {

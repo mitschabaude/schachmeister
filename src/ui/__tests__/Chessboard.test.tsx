@@ -14,7 +14,7 @@ const leereReihe = (): [
   undefined,
 ] => [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];
 
-const brettMitTuermen: Brett = [
+const brettMitFiguren: Brett = [
   [
     { art: "turm", farbe: "b" },
     undefined,
@@ -39,16 +39,32 @@ const brettMitTuermen: Brett = [
     undefined,
     undefined,
     undefined,
-    { art: "turm", farbe: "w" },
+    { art: "koenig", farbe: "w" },
   ],
 ] as const;
 
 describe("Chessboard", () => {
   it("shows piece symbols with accessible labels", () => {
-    render(<Chessboard brett={brettMitTuermen} />);
+    render(<Chessboard brett={brettMitFiguren} />);
 
     expect(screen.getByRole("grid", { name: "Schachbrett" })).toBeInTheDocument();
-    expect(screen.getByLabelText("Feld 1-1: schwarze turm")).toHaveTextContent("♜");
-    expect(screen.getByLabelText("Feld 8-8: weiße turm")).toHaveTextContent("♖");
+    expect(screen.getByLabelText("Feld 1-1: schwarze turm")).toHaveTextContent(/\u265C/);
+    expect(screen.getByLabelText("Feld 8-8: weiße koenig")).toHaveTextContent(/\u265A/);
+  });
+
+  it("colors pieces according to their owner", () => {
+    render(<Chessboard brett={brettMitFiguren} />);
+
+    const schwarzesFeld = screen.getByLabelText("Feld 1-1: schwarze turm");
+    const weissesFeld = screen.getByLabelText("Feld 8-8: weiße koenig");
+
+    const schwarzesSymbol = schwarzesFeld.querySelector("span");
+    const weissesSymbol = weissesFeld.querySelector("span");
+
+    expect(schwarzesSymbol).not.toBeNull();
+    expect(weissesSymbol).not.toBeNull();
+
+    expect(schwarzesSymbol).toHaveStyle({ color: "#0f172a" });
+    expect(weissesSymbol).toHaveStyle({ color: "#ffffff" });
   });
 });
