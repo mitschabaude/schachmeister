@@ -56,7 +56,9 @@ describe("Chessboard", () => {
     expect(schwarzesSymbol).not.toBeNull();
     expect(weissesSymbol).not.toBeNull();
 
-    expect(schwarzesSymbol).toHaveStyle({ color: "#0f172a" });
+    expect(schwarzesSymbol).toHaveClass("text-slate-900");
+    expect(schwarzesSymbol).toHaveStyle({ color: "#000000" });
+    expect(weissesSymbol).toHaveClass("text-white");
     expect(weissesSymbol).toHaveStyle({ color: "#ffffff" });
   });
 });

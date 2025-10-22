@@ -45,9 +45,7 @@ export function Chessboard({ brett }: Status) {
               {feld !== undefined ? (
                 <span
                   className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass}`}
-                  style={{
-                    color: feld.farbe === "w" ? "#ffffff" : "#0f172a",
-                  }}
+                  // style={{ color: feld.farbe === "w" ? "#ffffff" : "#0f172a" }}
                   aria-hidden="true"
                 >
                   {symbol}
