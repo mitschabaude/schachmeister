@@ -1,4 +1,4 @@
-import type { Figur, Status } from "../schach/types";
+import type { Figur, Status, Zug } from "../schach/types";
 const asTextGlyph = (symbol: string) => `${symbol}\uFE0E`;
 
 const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
@@ -10,7 +10,7 @@ const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
   koenig: { w: asTextGlyph("♚"), b: asTextGlyph("♚") },
 };
 
-export function Chessboard({ brett }: Status) {
+export function Chessboard({ status: { brett }, onMove }: { status: Status; onMove: (zug: Zug) => void }) {
   return (
     <div
       className="grid [grid-template-columns:repeat(8,4rem)] [grid-template-rows:repeat(8,4rem)] overflow-hidden rounded-xl border-4 border-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.2)]"
