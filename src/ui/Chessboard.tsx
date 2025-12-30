@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Figur, Status, Zug, Position } from "../schach/types";
+import type { Figur, Status, Zug, Position } from "../schach/types.ts";
 const asTextGlyph = (symbol: string) => `${symbol}\uFE0E`;
 
 const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
@@ -11,17 +11,34 @@ const pieceSymbols: Record<Figur["art"], Record<Figur["farbe"], string>> = {
   koenig: { w: asTextGlyph("♚"), b: asTextGlyph("♚") },
 };
 
-export function Chessboard({ status: { brett }, onMove }: { status: Status; onMove: (zug: Zug) => void }) {
-  const [gezogeneFigur, setGezogeneFigur] = useState<
-    { pos: Position; x: number; y: number; startX: number; startY: number } | undefined
+export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Zug) => void }) {
+  let { brett } = status;
+  let [gezogeneFigur, setGezogeneFigur] = useState<
+    { figur: Figur; pos: Position; x: number; y: number; startX: number; startY: number } | undefined
   >(undefined);
-  console.log("figur:", gezogeneFigur);
 
   return (
     <div
       className="grid [grid-template-columns:repeat(8,4rem)] [grid-template-rows:repeat(8,4rem)] overflow-hidden rounded-xl border-4 border-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.2)]"
       role="grid"
       aria-label="Schachbrett"
+      onMouseMove={(e) => {
+        if (gezogeneFigur !== undefined) {
+          let x = e.pageX - gezogeneFigur.startX;
+          let y = e.pageY - gezogeneFigur.startY;
+          setGezogeneFigur({
+            pos: gezogeneFigur.pos,
+            figur: gezogeneFigur.figur,
+            x,
+            y,
+            startX: gezogeneFigur.startX,
+            startY: gezogeneFigur.startY,
+          });
+        }
+      }}
+      onMouseLeave={(e) => {
+        setGezogeneFigur(undefined);
+      }}
     >
       {brett.map((reihe, reihenIndex) =>
         reihe.map((feld, spaltenIndex) => {
@@ -56,20 +73,13 @@ export function Chessboard({ status: { brett }, onMove }: { status: Status; onMo
               aria-label={ariaLabel}
               onMouseUp={(e) => {
                 // TODO versuche echten zug zu machen
+                if (gezogeneFigur === undefined) return;
+                onMove({
+                  von: gezogeneFigur.pos,
+                  nach: { reihe: reihenIndex, spalte: spaltenIndex },
+                  figur: gezogeneFigur.figur,
+                });
                 setGezogeneFigur(undefined);
-              }}
-              onMouseMove={(e) => {
-                if (gezogeneFigur !== undefined) {
-                  let x = e.pageX - gezogeneFigur.startX;
-                  let y = e.pageY - gezogeneFigur.startY;
-                  setGezogeneFigur({
-                    pos: gezogeneFigur.pos,
-                    x,
-                    y,
-                    startX: gezogeneFigur.startX,
-                    startY: gezogeneFigur.startY,
-                  });
-                }
               }}
             >
               {feld !== undefined ? (
@@ -83,8 +93,10 @@ export function Chessboard({ status: { brett }, onMove }: { status: Status; onMo
                       : undefined,
                   }}
                   onMouseDown={(e) => {
+                    let pos = { reihe: reihenIndex, spalte: spaltenIndex };
                     setGezogeneFigur({
-                      pos: { reihe: reihenIndex, spalte: spaltenIndex },
+                      pos,
+                      figur: feld,
                       x: 0,
                       y: 0,
                       startX: e.pageX,

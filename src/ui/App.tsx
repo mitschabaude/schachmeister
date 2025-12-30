@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Brett, Status, Zug } from "../schach/types";
 import { Chessboard } from "./Chessboard";
-import { istKorrekterZug } from "../schach/logic";
+import { istKorrekterZug, zugAnwenden } from "../schach/logic";
 
 const startBrett: Brett = [
   [
@@ -55,6 +55,9 @@ function App() {
 
   function onMove(zug: Zug) {
     let ok = istKorrekterZug(zug, status);
+    if (!ok) return;
+    status = zugAnwenden(zug, status);
+    setStatus(status);
   }
 
   return (
