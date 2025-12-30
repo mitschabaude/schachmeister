@@ -1,4 +1,4 @@
-export type { Figur, Brett, Status, Zug };
+export type { Figur, Brett, Status, Zug, Position };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
 type Farbe = "w" | "b";

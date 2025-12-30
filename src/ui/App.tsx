@@ -62,7 +62,7 @@ function App() {
       <div className="flex max-w-xl flex-col items-center gap-6 text-center text-stone-700">
         <div>
           <h1 className="text-4xl font-semibold tracking-tight text-stone-800">Schachmeister</h1>
-          <p className="mt-2 text-base text-stone-600">Das Brett steht bereit – die Partie kann warten.</p>
+          <p className="mt-2 text-base text-stone-600">Los geht's!</p>
         </div>
         <Chessboard status={status} onMove={onMove} />
       </div>
