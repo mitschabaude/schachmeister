@@ -17,28 +17,35 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
     { figur: Figur; pos: Position; x: number; y: number; startX: number; startY: number } | undefined
   >(undefined);
 
+  const handleMove = (pageX: number, pageY: number) => {
+    if (gezogeneFigur !== undefined) {
+      let x = pageX - gezogeneFigur.startX;
+      let y = pageY - gezogeneFigur.startY;
+      setGezogeneFigur({
+        pos: gezogeneFigur.pos,
+        figur: gezogeneFigur.figur,
+        x,
+        y,
+        startX: gezogeneFigur.startX,
+        startY: gezogeneFigur.startY,
+      });
+    }
+  };
+
   return (
     <div
-      className="grid [grid-template-columns:repeat(8,4rem)] [grid-template-rows:repeat(8,4rem)] overflow-hidden rounded-xl border-4 border-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.2)]"
+      className="grid w-full max-w-[min(100vw-2rem,100vh-2rem,32rem)] aspect-square grid-cols-8 grid-rows-8 overflow-hidden rounded-xl border-4 border-slate-900 shadow-[0_6px_20px_rgba(0,0,0,0.2)] touch-none"
       role="grid"
       aria-label="Schachbrett"
-      onMouseMove={(e) => {
-        if (gezogeneFigur !== undefined) {
-          let x = e.pageX - gezogeneFigur.startX;
-          let y = e.pageY - gezogeneFigur.startY;
-          setGezogeneFigur({
-            pos: gezogeneFigur.pos,
-            figur: gezogeneFigur.figur,
-            x,
-            y,
-            startX: gezogeneFigur.startX,
-            startY: gezogeneFigur.startY,
-          });
+      onMouseMove={(e) => handleMove(e.pageX, e.pageY)}
+      onTouchMove={(e) => {
+        if (gezogeneFigur !== undefined && e.touches[0]) {
+          e.preventDefault();
+          handleMove(e.touches[0].pageX, e.touches[0].pageY);
         }
       }}
-      onMouseLeave={(e) => {
-        setGezogeneFigur(undefined);
-      }}
+      onMouseLeave={() => setGezogeneFigur(undefined)}
+      onTouchEnd={() => setGezogeneFigur(undefined)}
     >
       {brett.map((reihe, reihenIndex) =>
         reihe.map((feld, spaltenIndex) => {
@@ -59,8 +66,6 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
             gezogeneFigur.pos.reihe === reihenIndex &&
             gezogeneFigur.pos.spalte === spaltenIndex;
 
-          const textSize = istGezogen ? "2.5rem" : "3rem";
-
           return (
             <div
               key={`${reihenIndex}-${spaltenIndex}`}
@@ -71,9 +76,19 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
               }`}
               role="gridcell"
               aria-label={ariaLabel}
-              onMouseUp={(e) => {
+              onMouseUp={() => {
                 // TODO versuche echten zug zu machen
                 if (gezogeneFigur === undefined) return;
+                onMove({
+                  von: gezogeneFigur.pos,
+                  nach: { reihe: reihenIndex, spalte: spaltenIndex },
+                  figur: gezogeneFigur.figur,
+                });
+                setGezogeneFigur(undefined);
+              }}
+              onTouchEnd={(e) => {
+                if (gezogeneFigur === undefined) return;
+                e.preventDefault();
                 onMove({
                   von: gezogeneFigur.pos,
                   nach: { reihe: reihenIndex, spalte: spaltenIndex },
@@ -84,10 +99,11 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
             >
               {feld !== undefined ? (
                 <span
-                  className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass}`}
+                  className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass} ${
+                    istGezogen ? "text-[min(2.5rem,10vw)]" : "text-[min(3rem,12vw)]"
+                  }`}
                   aria-hidden="true"
                   style={{
-                    fontSize: textSize,
                     transform: istGezogen
                       ? `translate(${gezogeneFigur.x}px, ${gezogeneFigur.y}px)`
                       : undefined,
@@ -101,6 +117,19 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
                       y: 0,
                       startX: e.pageX,
                       startY: e.pageY,
+                    });
+                  }}
+                  onTouchStart={(e) => {
+                    if (!e.touches[0]) return;
+                    e.preventDefault();
+                    let pos = { reihe: reihenIndex, spalte: spaltenIndex };
+                    setGezogeneFigur({
+                      pos,
+                      figur: feld,
+                      x: 0,
+                      y: 0,
+                      startX: e.touches[0].pageX,
+                      startY: e.touches[0].pageY,
                     });
                   }}
                 >
