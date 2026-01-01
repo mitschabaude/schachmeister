@@ -114,7 +114,7 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
               key={`${reihenIndex}-${spaltenIndex}`}
               data-reihe={reihenIndex}
               data-spalte={spaltenIndex}
-              className={`flex items-center justify-center leading-none select-none transition-transform duration-100 hover:scale-105 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] ${
+              className={`flex items-center justify-center leading-none select-none transition-transform duration-100 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] ${
                 istDunkel
                   ? "bg-[#b58863] focus-visible:outline-amber-300"
                   : "bg-[#f0d9b5] focus-visible:outline-amber-400"
