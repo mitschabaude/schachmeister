@@ -10,5 +10,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
 function zugAnwenden(zug: Zug, status: Status): Status {
   // TODO
   console.log("Wir machen einen zug!", zug);
-  return status;
+  status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
+  status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
+  return { ...status }
 }
