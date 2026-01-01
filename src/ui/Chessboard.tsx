@@ -45,7 +45,38 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
         }
       }}
       onMouseLeave={() => setGezogeneFigur(undefined)}
-      onTouchEnd={() => setGezogeneFigur(undefined)}
+      onTouchEnd={(e) => {
+        if (gezogeneFigur === undefined) {
+          setGezogeneFigur(undefined);
+          return;
+        }
+
+        // Get the final touch position
+        const touch = e.changedTouches[0];
+        if (!touch) {
+          setGezogeneFigur(undefined);
+          return;
+        }
+
+        // Find the element at the touch end position
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        const gridcell = element?.closest('[role="gridcell"]') as HTMLElement | null;
+
+        if (gridcell) {
+          const reihe = gridcell.getAttribute("data-reihe");
+          const spalte = gridcell.getAttribute("data-spalte");
+
+          if (reihe !== null && spalte !== null) {
+            onMove({
+              von: gezogeneFigur.pos,
+              nach: { reihe: parseInt(reihe), spalte: parseInt(spalte) },
+              figur: gezogeneFigur.figur,
+            });
+          }
+        }
+
+        setGezogeneFigur(undefined);
+      }}
     >
       {brett.map((reihe, reihenIndex) =>
         reihe.map((feld, spaltenIndex) => {
@@ -69,6 +100,8 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
           return (
             <div
               key={`${reihenIndex}-${spaltenIndex}`}
+              data-reihe={reihenIndex}
+              data-spalte={spaltenIndex}
               className={`flex items-center justify-center leading-none select-none transition-transform duration-100 hover:scale-105 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] ${
                 istDunkel
                   ? "bg-[#b58863] focus-visible:outline-amber-300"
@@ -79,16 +112,6 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
               onMouseUp={() => {
                 // TODO versuche echten zug zu machen
                 if (gezogeneFigur === undefined) return;
-                onMove({
-                  von: gezogeneFigur.pos,
-                  nach: { reihe: reihenIndex, spalte: spaltenIndex },
-                  figur: gezogeneFigur.figur,
-                });
-                setGezogeneFigur(undefined);
-              }}
-              onTouchEnd={(e) => {
-                if (gezogeneFigur === undefined) return;
-                e.preventDefault();
                 onMove({
                   von: gezogeneFigur.pos,
                   nach: { reihe: reihenIndex, spalte: spaltenIndex },
