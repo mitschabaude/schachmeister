@@ -17,10 +17,10 @@ beforeAll(() => {
       constructor(touchInit: TouchInit) {
         this.identifier = touchInit.identifier;
         this.target = touchInit.target;
-        this.clientX = touchInit.clientX;
-        this.clientY = touchInit.clientY;
-        this.pageX = touchInit.pageX;
-        this.pageY = touchInit.pageY;
+        this.clientX = touchInit.clientX ?? 0;
+        this.clientY = touchInit.clientY ?? 0;
+        this.pageX = touchInit.pageX ?? 0;
+        this.pageY = touchInit.pageY ?? 0;
       }
     } as any;
   }
@@ -39,12 +39,30 @@ const createTestStatus = (): Status => ({
       { art: "pferd", farbe: "b" },
       { art: "turm", farbe: "b" },
     ],
-    Array(8).fill({ art: "bauer", farbe: "b" }),
-    Array(8).fill(undefined),
-    Array(8).fill(undefined),
-    Array(8).fill(undefined),
-    Array(8).fill(undefined),
-    Array(8).fill({ art: "bauer", farbe: "w" }),
+    [
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+      { art: "bauer", farbe: "b" },
+    ],
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+    [
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+      { art: "bauer", farbe: "w" },
+    ],
     [
       { art: "turm", farbe: "w" },
       { art: "pferd", farbe: "w" },
@@ -56,6 +74,7 @@ const createTestStatus = (): Status => ({
       { art: "turm", farbe: "w" },
     ],
   ],
+  amZug: "w",
 });
 
 describe("Chessboard Touch Interactions", () => {
@@ -81,9 +100,11 @@ describe("Chessboard Touch Interactions", () => {
     // Board is 8x8, laid out row by row
     const fromCell = cells[6 * 8 + 4]; // Row 6, Column 4 (white pawn)
     const toCell = cells[4 * 8 + 4]; // Row 4, Column 4 (empty square)
+    expect(fromCell).toBeTruthy();
+    expect(toCell).toBeTruthy();
 
     // Find the piece span within the from cell
-    const piece = fromCell.querySelector("span");
+    const piece = fromCell!.querySelector("span");
     expect(piece).toBeTruthy();
 
     // Mock elementFromPoint to return the target cell
@@ -133,7 +154,7 @@ describe("Chessboard Touch Interactions", () => {
 
     // Verify the move was called with correct positions
     expect(onMove).toHaveBeenCalledTimes(1);
-    const move: Zug = onMove.mock.calls[0][0];
+    const move: Zug = onMove.mock.calls[0]![0];
 
     // Should move from row 6, col 4 to row 4, col 4
     expect(move.von).toEqual({ reihe: 6, spalte: 4 });
@@ -150,7 +171,8 @@ describe("Chessboard Touch Interactions", () => {
     const board = screen.getByRole("grid");
     const cells = screen.getAllByRole("gridcell");
     const fromCell = cells[6 * 8 + 4];
-    const piece = fromCell.querySelector("span");
+    expect(fromCell).toBeTruthy();
+    const piece = fromCell!.querySelector("span");
 
     // Mock elementFromPoint to return something outside the board
     const originalElementFromPoint = document.elementFromPoint;
