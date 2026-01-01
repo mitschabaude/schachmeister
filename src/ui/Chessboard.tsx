@@ -39,7 +39,7 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
       aria-label="Schachbrett"
       onMouseMove={(e) => handleMove(e.pageX, e.pageY)}
       onTouchMove={(e) => {
-        if (gezogeneFigur !== undefined) {
+        if (gezogeneFigur !== undefined && e.touches[0]) {
           e.preventDefault();
           handleMove(e.touches[0].pageX, e.touches[0].pageY);
         }
@@ -121,6 +121,7 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
                     });
                   }}
                   onTouchStart={(e) => {
+                    if (!e.touches[0]) return;
                     e.preventDefault();
                     let pos = { reihe: reihenIndex, spalte: spaltenIndex };
                     setGezogeneFigur({
