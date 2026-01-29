@@ -56,9 +56,8 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
 
           const ariaLabel =
             feld !== undefined
-              ? `Feld ${reihenIndex + 1}-${spaltenIndex + 1}: ${
-                  feld.farbe === "w" ? "weiße" : "schwarze"
-                } ${feld.art}`
+              ? `Feld ${reihenIndex + 1}-${spaltenIndex + 1}: ${feld.farbe === "w" ? "weiße" : "schwarze"
+              } ${feld.art}`
               : `Feld ${reihenIndex + 1}-${spaltenIndex + 1}: leer`;
 
           const istGezogen =
@@ -69,11 +68,10 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
           return (
             <div
               key={`${reihenIndex}-${spaltenIndex}`}
-              className={`flex items-center justify-center leading-none select-none transition-transform duration-100 hover:scale-105 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] ${
-                istDunkel
+              className={`flex items-center justify-center leading-none select-none transition-transform duration-100 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-4px] ${istDunkel
                   ? "bg-[#b58863] focus-visible:outline-amber-300"
                   : "bg-[#f0d9b5] focus-visible:outline-amber-400"
-              }`}
+                }`}
               role="gridcell"
               aria-label={ariaLabel}
               onMouseUp={() => {
@@ -99,9 +97,8 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
             >
               {feld !== undefined ? (
                 <span
-                  className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass} ${
-                    istGezogen ? "text-[min(2.5rem,10vw)]" : "text-[min(3rem,12vw)]"
-                  }`}
+                  className={`leading-none drop-shadow-[0_0_2px_rgba(15,23,42,0.55)] ${pieceColorClass} ${istGezogen ? "text-[min(2.5rem,10vw)]" : "text-[min(3rem,12vw)]"
+                    }`}
                   aria-hidden="true"
                   style={{
                     transform: istGezogen
