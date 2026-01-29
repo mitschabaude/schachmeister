@@ -8,15 +8,15 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   return true;
 }
 
-function zugAnwenden(zug: Zug, status: Status, n: number): Status {
+function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   console.log("Wir machen einen zug!", zug);
-  ändereAmZug(status)
   status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
   status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
-  return { ...status }
+  ändereAmZug(status)
+  return status
 }
 
 function ändereAmZug(status: Status) {
-  if (status.amZug = "b") status.amZug = "w"
+  if (status.amZug === "b") status.amZug = "w"
   else status.amZug = "b"
 }
