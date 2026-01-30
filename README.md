@@ -22,6 +22,7 @@ type Zug;
 /** Entscheidet, ob ein vorgeschlagener Zug beim aktuellen Spielstand gültig ist. */
 istKorrekterZug(zug: Zug, status: Status): boolean;
 
-/** Wendet einen Zug, der als gültig angenommen werden darf, auf einen Spielstand an und gibt den nächsten Spielstand zurück. */
+/** Wendet einen Zug, der als gültig angenommen werden darf,
+  auf einen Spielstand an und gibt den nächsten Spielstand zurück. */
 zugAnwenden(zug: Zug, status: Status): Status;
 ```
