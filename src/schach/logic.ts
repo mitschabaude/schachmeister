@@ -24,14 +24,24 @@ function ändereAmZug(status: Status) {
 
 function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
   if (zug.von.reihe + 1 == zug.nach.reihe) {
-    if (zug.figur.farbe == "w") { }
+    if (zug.figur.farbe == "w") {
+      if (zug.von.spalte === zug.nach.spalte) {
+        if (brett[zug.von.reihe + 1]![zug.von.spalte] === undefined) return true
+      }
+      if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
+        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true
+      }
+    }
   }
   if (zug.von.reihe - 1 == zug.nach.reihe) {
     if (zug.figur.farbe == "b") {
       if (zug.von.spalte === zug.nach.spalte) {
-        if (brett[zug.von.reihe + 1]![zug.von.spalte]) return true
+        if (brett[zug.von.reihe - 1]![zug.von.spalte] !== undefined) return true
       }
-      if (zug.nach.spalte === zug.von.spalte + 1 || zug.nach.spalte === zug.von.spalte - 1) { }
+      if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
+        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true
+      }
     }
   }
+  return false
 }
