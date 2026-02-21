@@ -1,11 +1,16 @@
-import type { Status, Zug, Position, Figur, Brett } from "./types";
+import type { Status, Zug, Position, Figur, Brett, Feld } from "./types";
 
 export { istKorrekterZug, zugAnwenden };
 
 function istKorrekterZug(zug: Zug, status: Status): boolean {
-  // TODO
+  let { brett } = status;
+  // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
-  if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status.brett);
+
+  // man darf seine eigene figur nicht schlagen
+  if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
+
+  if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, brett);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
   return true;
 }
@@ -27,34 +32,34 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
   if (zug.von.reihe - 1 == zug.nach.reihe) {
     if (zug.figur.farbe == "w") {
       if (zug.von.spalte === zug.nach.spalte) {
-        if (brett[zug.von.reihe - 1]![zug.von.spalte] === undefined) return true
+        if (brett[zug.von.reihe - 1]![zug.von.spalte] === undefined) return true;
       }
       if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
-        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true
+        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true;
       }
     }
   }
   if (zug.von.reihe + 1 == zug.nach.reihe) {
     if (zug.figur.farbe == "b") {
       if (zug.von.spalte === zug.nach.spalte) {
-        if (brett[zug.von.reihe + 1]![zug.von.spalte] === undefined) return true
+        if (brett[zug.von.reihe + 1]![zug.von.spalte] === undefined) return true;
       }
       if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
-        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true
+        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true;
       }
     }
   }
   if (zug.von.reihe + 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "b") {
-      if (zug.von.reihe == 1) return true
+      if (zug.von.reihe == 1) return true;
     }
   }
   if (zug.von.reihe - 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "w") {
-      if (zug.von.reihe == 6) return true
+      if (zug.von.reihe == 6) return true;
     }
   }
-  return false
+  return false;
 }
 
 function istKorrekterPferdeZug(zug: Zug): boolean {
@@ -70,4 +75,8 @@ function raufRunterDistanz(zug: Zug) {
 
 function linksRechtsDistanz(zug: Zug) {
   return Math.abs(zug.von.spalte - zug.nach.spalte);
+}
+
+function zielFeld(zug: Zug, brett: Brett): Feld {
+  return brett[zug.nach.reihe]![zug.nach.spalte];
 }

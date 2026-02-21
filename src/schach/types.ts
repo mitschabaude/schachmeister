@@ -1,4 +1,4 @@
-export type { Figur, Brett, Status, Zug, Position };
+export type { Figur, Brett, Status, Zug, Position, Feld };
 export { startBrett };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
