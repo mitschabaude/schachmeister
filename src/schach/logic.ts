@@ -34,8 +34,8 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
       if (zug.von.spalte === zug.nach.spalte) {
         if (brett[zug.von.reihe - 1]![zug.von.spalte] === undefined) return true;
       }
-      if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
-        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true;
+      if (linksRechtsDistanz(zug) === 1) {
+        if (zielFeld(zug, brett) !== undefined) return true;
       }
     }
   }
@@ -44,8 +44,8 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
       if (zug.von.spalte === zug.nach.spalte) {
         if (brett[zug.von.reihe + 1]![zug.von.spalte] === undefined) return true;
       }
-      if (Math.abs(zug.nach.spalte - zug.von.spalte) === 1) {
-        if (brett[zug.nach.reihe]![zug.nach.spalte] !== undefined) return true;
+      if (linksRechtsDistanz(zug) === 1) {
+        if (zielFeld(zug, brett) !== undefined) return true;
       }
     }
   }
