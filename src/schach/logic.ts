@@ -1,11 +1,11 @@
-import type { Status, Zug, Position, Figur, Brett, Feld } from "./types";
+import type { Status, Zug, Position, Figur, Brett, Feld, UmwandlungsFigurArt } from "./types";
 
-export { istKorrekterZug, zugAnwenden };
+export { istKorrekterZug, zugAnwenden, bauerUmwandeln };
 
 function istKorrekterZug(zug: Zug, status: Status): boolean {
   let { brett } = status;
   // kein zug wenn bauernumwandlung
-  if (status.istBauernUmwandlung) return false;
+  if (status.bauernUmwandlung !== false) return false;
 
   // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
@@ -26,6 +26,15 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   return status;
 }
 
+function bauerUmwandeln(figur: UmwandlungsFigurArt, { ...status }: Status): Status {
+  let { brett, bauernUmwandlung } = status;
+  if (bauernUmwandlung === false) return status;
+  let bauer = feld(bauernUmwandlung, brett);
+  if (bauer === undefined) throw Error("invalider status: bauernumwandlung von leerem feld");
+  setzeFeld(bauernUmwandlung, brett, { art: figur, farbe: bauer.farbe });
+  status.bauernUmwandlung = false;
+  return status;
+}
 
 function ändereAmZug(status: Status) {
   if (status.amZug === "b") status.amZug = "w";
@@ -82,5 +91,13 @@ function linksRechtsDistanz(zug: Zug) {
 }
 
 function zielFeld(zug: Zug, brett: Brett): Feld {
-  return brett[zug.nach.reihe]![zug.nach.spalte];
+  return feld(zug.nach, brett);
+}
+
+function feld(position: Position, brett: Brett): Feld {
+  return brett[position.reihe]![position.spalte];
+}
+
+function setzeFeld(position: Position, brett: Brett, feld: Feld) {
+  brett[position.reihe]![position.spalte] = feld;
 }

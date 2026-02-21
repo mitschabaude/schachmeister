@@ -1,4 +1,4 @@
-export type { Figur, Brett, Status, Zug, Position, Feld };
+export type { Figur, Brett, Status, Zug, Position, Feld, UmwandlungsFigurArt };
 export { startBrett, startStatus };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
@@ -34,9 +34,12 @@ type Brett = [
 ];
 
 type Status = {
+  /** das aktuelle brett */
   brett: Brett;
+  /** farbe die am zug ist */
   amZug: Farbe;
-  istBauernUmwandlung: boolean;
+  /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
+  bauernUmwandlung: false | Position;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -47,6 +50,8 @@ type Zug = {
   von: Position;
   nach: Position;
 };
+
+type UmwandlungsFigurArt = "laeufer" | "pferd" | "turm" | "dame";
 
 const startBrett: Brett = [
   [
@@ -98,5 +103,5 @@ const startBrett: Brett = [
 const startStatus: Status = {
   brett: startBrett,
   amZug: "w",
-  istBauernUmwandlung: false
-}
+  bauernUmwandlung: false,
+};
