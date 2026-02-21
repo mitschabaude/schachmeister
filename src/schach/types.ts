@@ -1,5 +1,5 @@
 export type { Figur, Brett, Status, Zug, Position, Feld };
-export { startBrett };
+export { startBrett, startStatus };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
 type Farbe = "w" | "b";
@@ -36,6 +36,7 @@ type Brett = [
 type Status = {
   brett: Brett;
   amZug: Farbe;
+  istBauernUmwandlung: boolean;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -93,3 +94,9 @@ const startBrett: Brett = [
     { art: "turm", farbe: "w" },
   ],
 ];
+
+const startStatus: Status = {
+  brett: startBrett,
+  amZug: "w",
+  istBauernUmwandlung: false
+}

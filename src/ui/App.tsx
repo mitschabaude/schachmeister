@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { startBrett, type Status, type Zug } from "../schach/types";
+import { startStatus, type Status, type Zug } from "../schach/types";
 import { Chessboard } from "./Chessboard";
 import { istKorrekterZug, zugAnwenden } from "../schach/logic";
 
 function App() {
-  let [status, setStatus] = useState<Status>({ brett: startBrett, amZug: "w" });
+  let [status, setStatus] = useState<Status>(startStatus);
 
   function onMove(zug: Zug) {
     if (istKorrekterZug(zug, status)) {

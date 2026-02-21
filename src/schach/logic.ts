@@ -4,6 +4,9 @@ export { istKorrekterZug, zugAnwenden };
 
 function istKorrekterZug(zug: Zug, status: Status): boolean {
   let { brett } = status;
+  // kein zug wenn bauernumwandlung
+  if (status.istBauernUmwandlung) return false;
+
   // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
 
@@ -22,6 +25,7 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   ändereAmZug(status);
   return status;
 }
+
 
 function ändereAmZug(status: Status) {
   if (status.amZug === "b") status.amZug = "w";
