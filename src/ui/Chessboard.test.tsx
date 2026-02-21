@@ -75,6 +75,7 @@ const createTestStatus = (): Status => ({
     ],
   ],
   amZug: "w",
+  bauernUmwandlung: false,
 });
 
 describe("Chessboard Touch Interactions", () => {

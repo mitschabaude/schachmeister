@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { startStatus, type Status, type Zug } from "../schach/types";
+import type { UmwandlungsFigurArt } from "../schach/types";
 import { Chessboard } from "./Chessboard";
-import { istKorrekterZug, zugAnwenden } from "../schach/logic";
+import { BauernUmwandlung } from "./BauernUmwandlung";
+import { istKorrekterZug, zugAnwenden, bauerUmwandeln } from "../schach/logic";
 
 function App() {
   let [status, setStatus] = useState<Status>(startStatus);
@@ -13,6 +15,11 @@ function App() {
       console.log("Ungültiger Zug", zug);
     }
   }
+
+  function onUmwandlung(figur: UmwandlungsFigurArt) {
+    setStatus(bauerUmwandeln(figur, status));
+  }
+
   let farbe = status.amZug === "w" ? "Weiß" : "Schwarz";
 
   return (
@@ -23,6 +30,9 @@ function App() {
           <p className="mt-2 text-sm sm:text-base text-stone-600">{farbe} am Zug!</p>
         </div>
         <Chessboard status={status} onMove={onMove} />
+        {status.bauernUmwandlung !== false && (
+          <BauernUmwandlung farbe={status.amZug === "w" ? "b" : "w"} onWahl={onUmwandlung} />
+        )}
       </div>
     </div>
   );
