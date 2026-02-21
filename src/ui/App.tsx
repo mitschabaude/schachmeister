@@ -13,13 +13,14 @@ function App() {
       console.log("Ungültiger Zug", zug);
     }
   }
+  let farbe = status.amZug === "w" ? "Weiß" : "Schwarz";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#f9f7f3,#e0d4c3_60%,#b69b82)] p-4 sm:p-8">
       <div className="flex w-full max-w-xl flex-col items-center gap-4 sm:gap-6 text-center text-stone-700">
         <div>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-stone-800">Schachmeister</h1>
-          <p className="mt-2 text-sm sm:text-base text-stone-600">Los geht's!</p>
+          <p className="mt-2 text-sm sm:text-base text-stone-600">{farbe} am Zug!</p>
         </div>
         <Chessboard status={status} onMove={onMove} />
       </div>
