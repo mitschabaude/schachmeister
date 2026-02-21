@@ -1,4 +1,5 @@
 export type { Figur, Brett, Status, Zug, Position };
+export { startBrett };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
 type Farbe = "w" | "b";
@@ -45,3 +46,50 @@ type Zug = {
   von: Position;
   nach: Position;
 };
+
+const startBrett: Brett = [
+  [
+    { art: "turm", farbe: "b" },
+    { art: "pferd", farbe: "b" },
+    { art: "laeufer", farbe: "b" },
+    { art: "dame", farbe: "b" },
+    { art: "koenig", farbe: "b" },
+    { art: "laeufer", farbe: "b" },
+    { art: "pferd", farbe: "b" },
+    { art: "turm", farbe: "b" },
+  ],
+  [
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+  ],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+  ],
+  [
+    { art: "turm", farbe: "w" },
+    { art: "pferd", farbe: "w" },
+    { art: "laeufer", farbe: "w" },
+    { art: "dame", farbe: "w" },
+    { art: "koenig", farbe: "w" },
+    { art: "laeufer", farbe: "w" },
+    { art: "pferd", farbe: "w" },
+    { art: "turm", farbe: "w" },
+  ],
+];
