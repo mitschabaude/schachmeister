@@ -18,7 +18,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   return true;
 }
 
-function zugAnwenden(zug: Zug, status: Status): Status {
+function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   console.log("Wir machen einen zug!", zug);
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
