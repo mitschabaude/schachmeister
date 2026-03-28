@@ -13,7 +13,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   // man darf seine eigene figur nicht schlagen
   if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
 
-  if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, brett);
+  if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
   return true;
 }
@@ -23,9 +23,17 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
+    if (raufRunterDistanz(zug) == 2) status.enpassant = { reihe: (zug.von.reihe + zug.nach.reihe) / 2, spalte: zug.von.spalte };
   }
   status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
   status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
+  if (zug.nach == status.enpassant) {
+    if (zug.figur.farbe == "w") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined
+    if (zug.figur.farbe == "b") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined
+  }
+  if ((raufRunterDistanz(zug) !== 2) || zug.figur.art !== "bauer") {
+    status.enpassant = false
+  }
   ändereAmZug(status);
   return status;
 }
@@ -45,7 +53,8 @@ function ändereAmZug(status: Status) {
   else status.amZug = "b";
 }
 
-function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
+function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
+  let { brett } = status;
   if (zug.von.reihe - 1 == zug.nach.reihe) {
     if (zug.figur.farbe == "w") {
       if (zug.von.spalte === zug.nach.spalte) {
@@ -53,6 +62,7 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
       }
       if (linksRechtsDistanz(zug) === 1) {
         if (zielFeld(zug, brett) !== undefined) return true;
+        if (status.enpassant == zug.nach) return true
       }
     }
   }
@@ -63,6 +73,7 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
       }
       if (linksRechtsDistanz(zug) === 1) {
         if (zielFeld(zug, brett) !== undefined) return true;
+        if (status.enpassant == zug.nach) return true
       }
     }
   }

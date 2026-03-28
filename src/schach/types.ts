@@ -40,6 +40,7 @@ type Status = {
   amZug: Farbe;
   /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
   bauernUmwandlung: false | Position;
+  enpassant: false | Position;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -104,4 +105,5 @@ const startStatus: Status = {
   brett: startBrett,
   amZug: "w",
   bauernUmwandlung: false,
+  enpassant: false,
 };
