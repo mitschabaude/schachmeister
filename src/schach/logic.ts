@@ -23,16 +23,17 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
-    if (raufRunterDistanz(zug) == 2) status.enpassant = { reihe: (zug.von.reihe + zug.nach.reihe) / 2, spalte: zug.von.spalte };
+    if (raufRunterDistanz(zug) == 2)
+      status.enpassant = { reihe: (zug.von.reihe + zug.nach.reihe) / 2, spalte: zug.von.spalte };
   }
   status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
   status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
   if (zug.nach == status.enpassant) {
-    if (zug.figur.farbe == "w") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined
-    if (zug.figur.farbe == "b") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined
+    if (zug.figur.farbe == "w") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined;
+    if (zug.figur.farbe == "b") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined;
   }
-  if ((raufRunterDistanz(zug) !== 2) || zug.figur.art !== "bauer") {
-    status.enpassant = false
+  if (raufRunterDistanz(zug) !== 2 || zug.figur.art !== "bauer") {
+    status.enpassant = false;
   }
   ändereAmZug(status);
   return status;
@@ -62,7 +63,7 @@ function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
       }
       if (linksRechtsDistanz(zug) === 1) {
         if (zielFeld(zug, brett) !== undefined) return true;
-        if (status.enpassant == zug.nach) return true
+        if (selbePosition(status.enpassant, zug.nach)) return true;
       }
     }
   }
@@ -73,7 +74,7 @@ function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
       }
       if (linksRechtsDistanz(zug) === 1) {
         if (zielFeld(zug, brett) !== undefined) return true;
-        if (status.enpassant == zug.nach) return true
+        if (selbePosition(status.enpassant, zug.nach)) return true;
       }
     }
   }
@@ -115,4 +116,9 @@ function feld(position: Position, brett: Brett): Feld {
 
 function setzeFeld(position: Position, brett: Brett, feld: Feld) {
   brett[position.reihe]![position.spalte] = feld;
+}
+
+function selbePosition(pos1: Position | false, pos2: Position): boolean {
+  if (pos1 === false) return false;
+  return pos1.reihe === pos2.reihe && pos1.spalte === pos2.spalte;
 }
