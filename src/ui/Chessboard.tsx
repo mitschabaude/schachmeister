@@ -54,37 +54,26 @@ export function Chessboard({ status, onMove }: { status: Status; onMove: (zug: Z
         // Get the final touch position
         const touch = e.changedTouches[0];
         if (!touch) {
-          console.log("No touch found in changedTouches");
           setGezogeneFigur(undefined);
           return;
         }
 
-        console.log(`Touch ended at clientX: ${touch.clientX}, clientY: ${touch.clientY}`);
-
         // Find the element at the touch end position
         const element = document.elementFromPoint(touch.clientX, touch.clientY);
-        console.log("Element at touch point:", element);
 
         const gridcell = element?.closest('[role="gridcell"]') as HTMLElement | null;
-        console.log("Found gridcell:", gridcell);
 
         if (gridcell) {
           const reihe = gridcell.getAttribute("data-reihe");
           const spalte = gridcell.getAttribute("data-spalte");
-          console.log(`Target position: reihe=${reihe}, spalte=${spalte}`);
 
           if (reihe !== null && spalte !== null) {
-            console.log(
-              `Completing move from (${gezogeneFigur.pos.reihe}, ${gezogeneFigur.pos.spalte}) to (${reihe}, ${spalte})`,
-            );
             onMove({
               von: gezogeneFigur.pos,
               nach: { reihe: parseInt(reihe), spalte: parseInt(spalte) },
               figur: gezogeneFigur.figur,
             });
           }
-        } else {
-          console.log("No gridcell found at touch end position");
         }
 
         setGezogeneFigur(undefined);
