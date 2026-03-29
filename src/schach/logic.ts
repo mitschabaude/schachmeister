@@ -6,6 +6,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   // TODO
   if (status.amZug !== zug.figur.farbe) return false;
   if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status.brett);
+  if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
   return true;
 }
 
@@ -34,4 +35,14 @@ function istKorrekterBauernZug(zug: Zug, brett: Brett): boolean {
       if (zug.nach.spalte === zug.von.spalte + 1 || zug.nach.spalte === zug.von.spalte - 1) { }
     }
   }
+}
+
+function istKorrekterTurmZug(zug: Zug, brett: Brett): boolean {
+  let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe 
+  let bleibtSpalteGleich = zug.von.spalte === zug.nach.spalte
+  if (!(bleibtReiheGleich || bleibtSpalteGleich)) return false
+  //if ( TurmschlagtdurchFigur) return false
+  
+  // TODO gib das weg wenn fertig
+  return true
 }
