@@ -1,4 +1,5 @@
-import type { Status, Zug, Position, Figur, Brett, Feld, UmwandlungsFigurArt } from "./types";
+import type { Status, Zug, Position, Brett, Feld, UmwandlungsFigurArt } from "./types";
+import { selbeFigur, selbePosition } from "./utils.ts";
 
 export { istKorrekterZug, zugAnwenden, bauerUmwandeln };
 
@@ -13,6 +14,10 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   // man darf seine eigene figur nicht schlagen
   if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
 
+  // das start-feld muss die angegebene figur enthalten
+  let startFeld = feld(zug.von, brett);
+  if (!selbeFigur(startFeld, zug.figur)) return false;
+
   if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
   if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
@@ -20,7 +25,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
 }
 
 function zugAnwenden(zug: Zug, { ...status }: Status): Status {
-  console.log("Wir machen einen zug!", zug);
+  console.log("[DEBUG] Zug anwenden", zug);
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
@@ -82,14 +87,14 @@ function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
   if (zug.von.reihe + 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "b") {
       if (zug.von.reihe == 1) {
-        if (zug.von.spalte == zug.nach.spalte) return true
+        if (zug.von.spalte == zug.nach.spalte) return true;
       }
     }
   }
   if (zug.von.reihe - 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "w") {
       if (zug.von.reihe == 6) {
-        if (zug.von.spalte == zug.nach.spalte) return true
+        if (zug.von.spalte == zug.nach.spalte) return true;
       }
     }
   }
@@ -123,18 +128,12 @@ function setzeFeld(position: Position, brett: Brett, feld: Feld) {
   brett[position.reihe]![position.spalte] = feld;
 }
 
-function selbePosition(pos1: Position | false, pos2: Position): boolean {
-  if (pos1 === false) return false;
-  return pos1.reihe === pos2.reihe && pos1.spalte === pos2.spalte;
-}
-
-
 function istKorrekterTurmZug(zug: Zug, brett: Brett): boolean {
-  let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe
-  let bleibtSpalteGleich = zug.von.spalte === zug.nach.spalte
-  if (!(bleibtReiheGleich || bleibtSpalteGleich)) return false
+  let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe;
+  let bleibtSpalteGleich = zug.von.spalte === zug.nach.spalte;
+  if (!(bleibtReiheGleich || bleibtSpalteGleich)) return false;
   //if ( TurmschlagtdurchFigur) return false
 
   // TODO gib das weg wenn fertig
-  return true
+  return true;
 }

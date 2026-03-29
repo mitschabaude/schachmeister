@@ -7,8 +7,10 @@
     "start": "vite",
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "vitest run",
-    "test:watch": "vitest --watch",
+    "test": "npm run test:logic && npm run test:ui",
+    "test:logic": "node --test 'src/{test,schach}/**/*.test.ts'",
+    "test:ui": "vitest run",
+    "test:ui:watch": "vitest --watch",
     "preview": "vite preview",
     "check": "tsc -b --noEmit"
   },
