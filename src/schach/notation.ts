@@ -1,5 +1,7 @@
 /**
  * Helper-Funktion um Schachzuege in Standard-Notation in `Zug`-Objekte zu uebersetzen.
+ *
+ * Dies ermoeglicht uns, einen Spielstand konzis durch eine Abfolge von Zuegen in Notation zu erzeugen.
  */
 import { istKorrekterZug } from "./logic.ts";
 import type { Zug, FigurArt, Status, Position, Figur, Brett } from "./types.ts";
