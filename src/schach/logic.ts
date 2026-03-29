@@ -1,4 +1,5 @@
-import type { Status, Zug, Position, Figur, Brett, Feld, UmwandlungsFigurArt } from "./types";
+import type { Status, Zug, Position, Brett, Feld, UmwandlungsFigurArt } from "./types";
+import { selbeFigur, selbePosition } from "./utils.ts";
 
 export { istKorrekterZug, zugAnwenden, bauerUmwandeln };
 
@@ -12,6 +13,10 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
 
   // man darf seine eigene figur nicht schlagen
   if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
+
+  // das start-feld muss die angegebene figur enthalten
+  let startFeld = feld(zug.von, brett);
+  if (!selbeFigur(startFeld, zug.figur)) return false;
 
   if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
@@ -117,9 +122,4 @@ function feld(position: Position, brett: Brett): Feld {
 
 function setzeFeld(position: Position, brett: Brett, feld: Feld) {
   brett[position.reihe]![position.spalte] = feld;
-}
-
-function selbePosition(pos1: Position | false, pos2: Position): boolean {
-  if (pos1 === false) return false;
-  return pos1.reihe === pos2.reihe && pos1.spalte === pos2.spalte;
 }

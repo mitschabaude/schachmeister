@@ -13,6 +13,7 @@ import {
   type Brett,
   startStatus,
 } from "./types.ts";
+import { selbePosition } from "./utils.ts";
 
 export { parseZug, parseFeld, notation, figurAuf, spiel };
 
@@ -119,7 +120,11 @@ function parseZug(zugnotation: string, status: Status): Zug {
     istSchlag = true;
     zugnotation = zugnotation.slice(0, -1);
   }
-  // TODO: wir validieren das x im moment NICHT (kompliziert mit en passant)
+  // validiere: x ist genau dann vorhanden, wenn auf dem ziel-feld eine figur steht
+  let zielFigur = status.brett[ziel.reihe]![ziel.spalte];
+  if (istSchlag && zielFigur === undefined && !selbePosition(status.enpassant, ziel))
+    ungueltig(original, "Schlag (x) auf leeres Feld.");
+  if (!istSchlag && zielFigur !== undefined) ungueltig(original, "Ziel-Feld besetzt, aber x fehlt.");
 
   // wenn es jetzt noch ein zeichen gibt, muss es die start-spalte sein
   let startSpalte: number | undefined = undefined;
