@@ -1,6 +1,6 @@
-import { figurAuf, notation, spiel } from "../schach/notation";
-import { test } from "vitest";
-import { assert } from "../schach/utils";
+import { figurAuf, notation, spiel } from "../schach/notation.ts";
+import { test } from "node:test";
+import { assert } from "../schach/utils.ts";
 
 test("En Passant", () => {
   let status = spiel(["e4", "a5", "e5", "d5"]);
