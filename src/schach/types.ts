@@ -1,4 +1,5 @@
-export type { Figur, Brett, Status, Zug, Position };
+export type { Figur, Brett, Status, Zug, Position, Feld, UmwandlungsFigurArt };
+export { startBrett, startStatus };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
 type Farbe = "w" | "b";
@@ -33,8 +34,13 @@ type Brett = [
 ];
 
 type Status = {
+  /** das aktuelle brett */
   brett: Brett;
+  /** farbe die am zug ist */
   amZug: Farbe;
+  /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
+  bauernUmwandlung: false | Position;
+  enpassant: false | Position;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -44,4 +50,60 @@ type Zug = {
   figur: Figur;
   von: Position;
   nach: Position;
+};
+
+type UmwandlungsFigurArt = "laeufer" | "pferd" | "turm" | "dame";
+
+const startBrett: Brett = [
+  [
+    { art: "turm", farbe: "b" },
+    { art: "pferd", farbe: "b" },
+    { art: "laeufer", farbe: "b" },
+    { art: "dame", farbe: "b" },
+    { art: "koenig", farbe: "b" },
+    { art: "laeufer", farbe: "b" },
+    { art: "pferd", farbe: "b" },
+    { art: "turm", farbe: "b" },
+  ],
+  [
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+    { art: "bauer", farbe: "b" },
+  ],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+  [
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+    { art: "bauer", farbe: "w" },
+  ],
+  [
+    { art: "turm", farbe: "w" },
+    { art: "pferd", farbe: "w" },
+    { art: "laeufer", farbe: "w" },
+    { art: "dame", farbe: "w" },
+    { art: "koenig", farbe: "w" },
+    { art: "laeufer", farbe: "w" },
+    { art: "pferd", farbe: "w" },
+    { art: "turm", farbe: "w" },
+  ],
+];
+
+const startStatus: Status = {
+  brett: startBrett,
+  amZug: "w",
+  bauernUmwandlung: false,
+  enpassant: false,
 };

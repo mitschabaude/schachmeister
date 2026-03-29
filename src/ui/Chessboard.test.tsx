@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { Chessboard } from "./Chessboard";
-import type { Status, Zug } from "../schach/types";
+import { startStatus, type Status, type Zug } from "../schach/types";
 
 // Polyfill Touch for jsdom
 beforeAll(() => {
@@ -27,59 +27,9 @@ beforeAll(() => {
 });
 
 // Helper to create a basic chess board status
-const createTestStatus = (): Status => ({
-  brett: [
-    [
-      { art: "turm", farbe: "b" },
-      { art: "pferd", farbe: "b" },
-      { art: "laeufer", farbe: "b" },
-      { art: "dame", farbe: "b" },
-      { art: "koenig", farbe: "b" },
-      { art: "laeufer", farbe: "b" },
-      { art: "pferd", farbe: "b" },
-      { art: "turm", farbe: "b" },
-    ],
-    [
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-      { art: "bauer", farbe: "b" },
-    ],
-    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-    [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
-    [
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-      { art: "bauer", farbe: "w" },
-    ],
-    [
-      { art: "turm", farbe: "w" },
-      { art: "pferd", farbe: "w" },
-      { art: "laeufer", farbe: "w" },
-      { art: "dame", farbe: "w" },
-      { art: "koenig", farbe: "w" },
-      { art: "laeufer", farbe: "w" },
-      { art: "pferd", farbe: "w" },
-      { art: "turm", farbe: "w" },
-    ],
-  ],
-  amZug: "w",
-});
-
 describe("Chessboard Touch Interactions", () => {
   it("should render the chessboard", () => {
-    const status = createTestStatus();
+    const status = startStatus;
     const onMove = vi.fn();
 
     render(<Chessboard status={status} onMove={onMove} />);
@@ -88,7 +38,7 @@ describe("Chessboard Touch Interactions", () => {
   });
 
   it("should complete touch move with correct target position", async () => {
-    const status = createTestStatus();
+    const status = startStatus;
     const onMove = vi.fn();
 
     const { container } = render(<Chessboard status={status} onMove={onMove} />);
@@ -163,7 +113,7 @@ describe("Chessboard Touch Interactions", () => {
   });
 
   it("should not complete move if touch ends outside board", async () => {
-    const status = createTestStatus();
+    const status = startStatus;
     const onMove = vi.fn();
 
     const { container } = render(<Chessboard status={status} onMove={onMove} />);
@@ -223,7 +173,7 @@ describe("Chessboard Touch Interactions", () => {
   });
 
   it("should add data attributes to cells for position tracking", () => {
-    const status = createTestStatus();
+    const status = startStatus;
     const onMove = vi.fn();
 
     render(<Chessboard status={status} onMove={onMove} />);
