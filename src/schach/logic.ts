@@ -29,9 +29,9 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   }
   status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
   status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
-  if (zug.nach == status.enpassant) {
-    if (zug.figur.farbe == "w") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined;
-    if (zug.figur.farbe == "b") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined;
+  if (selbePosition(status.enpassant, zug.nach)) {
+    if (zug.figur.farbe == "w") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined;
+    if (zug.figur.farbe == "b") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined;
   }
   if (raufRunterDistanz(zug) !== 2 || zug.figur.art !== "bauer") {
     status.enpassant = false;
@@ -81,12 +81,16 @@ function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
   }
   if (zug.von.reihe + 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "b") {
-      if (zug.von.reihe == 1) return true;
+      if (zug.von.reihe == 1) {
+        if (zug.von.spalte == zug.nach.spalte) return true
+      }
     }
   }
   if (zug.von.reihe - 2 == zug.nach.reihe) {
     if (zug.figur.farbe == "w") {
-      if (zug.von.reihe == 6) return true;
+      if (zug.von.reihe == 6) {
+        if (zug.von.spalte == zug.nach.spalte) return true
+      }
     }
   }
   return false;
@@ -126,11 +130,11 @@ function selbePosition(pos1: Position | false, pos2: Position): boolean {
 
 
 function istKorrekterTurmZug(zug: Zug, brett: Brett): boolean {
-  let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe 
+  let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe
   let bleibtSpalteGleich = zug.von.spalte === zug.nach.spalte
   if (!(bleibtReiheGleich || bleibtSpalteGleich)) return false
   //if ( TurmschlagtdurchFigur) return false
-  
+
   // TODO gib das weg wenn fertig
   return true
 }
