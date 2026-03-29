@@ -55,4 +55,5 @@ export const bauernUmwandlungStatus: Status = {
   brett: testBrett,
   amZug: "b",
   bauernUmwandlung: { reihe: 0, spalte: 4 },
+  enpassant: false,
 };
