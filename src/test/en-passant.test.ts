@@ -1,20 +1,11 @@
-import { zugAnwenden } from "../schach/logic";
-import { parseZug } from "../schach/notation";
-import { startStatus, type Status } from "../schach/types";
-import { test, expect } from "vitest";
-
-function spiel(zuege: string[], start: Status = startStatus): Status {
-  let status = start;
-  for (let zugnotation of zuege) {
-    let zug = parseZug(zugnotation, status);
-    status = zugAnwenden(zug, status);
-  }
-  return status;
-}
+import { figurAuf, notation, spiel } from "../schach/notation";
+import { test } from "vitest";
+import { assert } from "../schach/utils";
 
 test("En Passant", () => {
   let status = spiel(["e4", "a5", "e5", "d5"]);
-  expect(status.enpassant).toEqual({ reihe: 3, spalte: 3 });
+  assert(status.enpassant !== false, "En Passant sollte möglich sein.");
+  assert(notation(status.enpassant) === "d6", "En Passant Position sollte d6 sein.");
   status = spiel(["exd6"], status);
-  expect(status.brett[3]![3]).toBeUndefined();
+  assert(figurAuf("d5", status.brett) === undefined, "Feld d5 sollte nach En Passant geschlagen sein.");
 });

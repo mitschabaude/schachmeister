@@ -3,10 +3,18 @@
  *
  * Dies ermoeglicht uns, einen Spielstand konzis durch eine Abfolge von Zuegen in Notation zu erzeugen.
  */
-import { istKorrekterZug } from "./logic.ts";
-import type { Zug, FigurArt, Status, Position, Figur, Brett } from "./types.ts";
+import { istKorrekterZug, zugAnwenden } from "./logic.ts";
+import {
+  type Zug,
+  type FigurArt,
+  type Status,
+  type Position,
+  type Figur,
+  type Brett,
+  startStatus,
+} from "./types.ts";
 
-export { parseZug };
+export { parseZug, parseFeld, notation, figurAuf, spiel };
 
 let spalten = ["a", "b", "c", "d", "e", "f", "g", "h"];
 let zeilen = ["8", "7", "6", "5", "4", "3", "2", "1"];
@@ -18,6 +26,45 @@ let figuren: Record<string, FigurArt> = {
   L: "laeufer",
   S: "pferd",
 };
+
+/**
+ * Uebersetzt eine Position in Zeilen/Spalten-Notation (z.B. { reihe: 0, spalte: 0 }) in die Standard-Notation (z.B. "a8").
+ */
+function notation(position: Position): string {
+  return spalten[position.spalte]! + zeilen[position.reihe]!;
+}
+
+/**
+ * Uebersetzt eine Feld-Notation z.B. "a8" => { reihe: 0, spalte: 0 }.
+ */
+function parseFeld(position: string): Position {
+  if (position.length !== 2) throw Error(`Ungültige Position: "${position}".`);
+  let spalte = spalten.indexOf(position[0]!);
+  let reihe = zeilen.indexOf(position[1]!);
+  if (spalte === -1 || reihe === -1) throw Error(`Ungültige Position: "${position}".`);
+  return { reihe, spalte };
+}
+
+/**
+ * Die Figur auf einem Feld, angegeben durch Notation
+ */
+function figurAuf(position: string, brett: Brett): Figur | undefined {
+  let pos = parseFeld(position);
+  return brett[pos.reihe]![pos.spalte];
+}
+
+/**
+ * Erzeugt einen Spielstand durch Anwenden einer Abfolge von Zuegen in Notation.
+ * Beginnend von einem Start-Status (default: Anfangsstellung).
+ */
+function spiel(zuege: string[], start: Status = startStatus): Status {
+  let status = start;
+  for (let zugnotation of zuege) {
+    let zug = parseZug(zugnotation, status);
+    status = zugAnwenden(zug, status);
+  }
+  return status;
+}
 
 /**
  * Uebersetzt eine Zug-Notation (z.B. "e4", "exd5", "Sf3", "Sgf3", "0-0") in ein `Zug`-Objekt.

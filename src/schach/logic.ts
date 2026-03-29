@@ -19,7 +19,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
 }
 
 function zugAnwenden(zug: Zug, { ...status }: Status): Status {
-  console.log("Wir machen einen zug!", zug);
+  console.log("[DEBUG] Zug anwenden", zug);
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
@@ -28,6 +28,7 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   }
   status.brett[zug.von.reihe]![zug.von.spalte] = undefined;
   status.brett[zug.nach.reihe]![zug.nach.spalte] = zug.figur;
+  // TODO BUG
   if (zug.nach == status.enpassant) {
     if (zug.figur.farbe == "w") status.brett[zug.nach.reihe - 1]![zug.nach.spalte] = undefined;
     if (zug.figur.farbe == "b") status.brett[zug.nach.reihe + 1]![zug.nach.spalte] = undefined;
