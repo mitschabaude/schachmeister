@@ -9,7 +9,7 @@ import type { Zug, FigurArt, Status, Position, Figur, Brett } from "./types.ts";
 export { parseZug };
 
 let spalten = ["a", "b", "c", "d", "e", "f", "g", "h"];
-let zeilen = ["1", "2", "3", "4", "5", "6", "7", "8"];
+let zeilen = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
 let figuren: Record<string, FigurArt> = {
   K: "koenig",
@@ -30,6 +30,7 @@ let figuren: Record<string, FigurArt> = {
 function parseZug(zugnotation: string, status: Status): Zug {
   // die farbe sehen wir aus dem status
   let farbe = status.amZug;
+  let original = zugnotation;
 
   // rochade
   if (zugnotation === "0-0" || zugnotation === "0-0-0") {
@@ -41,25 +42,25 @@ function parseZug(zugnotation: string, status: Status): Zug {
       nach: { reihe, spalte },
     };
     let ok = istKorrekterZug(zug, status);
-    if (!ok) ungueltigAufgrundStatus(zugnotation, "Rochade ist nicht erlaubt.");
+    if (!ok) ungueltigAufgrundStatus(original, "Rochade ist nicht erlaubt.");
     return zug;
   }
 
   // das erste zeichen gibt die figur an, ausser bei bauern
-  if (zugnotation.length < 1) ungueltig(zugnotation, "Zu wenige Zeichen.");
+  if (zugnotation.length < 1) ungueltig(original, "Zu wenige Zeichen.");
   let art: FigurArt = figuren[zugnotation[0]!] ?? "bauer";
   if (art !== "bauer") zugnotation = zugnotation.slice(1);
   let figur: Figur = { art, farbe };
 
   // die letzten 2 zeichen geben die ziel-position an, z.B. "f3"
   // wir extrahieren und validieren diese position zuerst
-  if (zugnotation.length < 2) ungueltig(zugnotation, "Zu wenige Zeichen.");
+  if (zugnotation.length < 2) ungueltig(original, "Zu wenige Zeichen.");
   let zielSpalte = zugnotation[zugnotation.length - 2]!;
   let zielZeile = zugnotation[zugnotation.length - 1]!;
   zugnotation = zugnotation.slice(0, -2);
   let zielSpalteIndex = spalten.indexOf(zielSpalte!);
   let zielZeileIndex = zeilen.indexOf(zielZeile!);
-  if (zielSpalteIndex === -1 || zielZeileIndex === -1) ungueltig(zugnotation, "Ungültige Ziel-Position.");
+  if (zielSpalteIndex === -1 || zielZeileIndex === -1) ungueltig(original, "Ungültige Ziel-Position.");
   let ziel: Position = { reihe: zielZeileIndex, spalte: zielSpalteIndex };
 
   // in der mitte gibt es noch:
@@ -71,25 +72,22 @@ function parseZug(zugnotation: string, status: Status): Zug {
     istSchlag = true;
     zugnotation = zugnotation.slice(0, -1);
   }
-  // wir validieren das x: es muss genau dann vorhanden sein, wenn auf dem ziel-feld eine figur steht
-  let zielFeld = status.brett[ziel.reihe]![ziel.spalte];
-  if (istSchlag && zielFeld === undefined) ungueltigAufgrundStatus(zugnotation, "Schlagzug auf leeres Feld.");
-  if (!istSchlag && zielFeld !== undefined)
-    ungueltigAufgrundStatus(zugnotation, "Nicht-Schlagzug auf besetztes Feld.");
+  // TODO: wir validieren das x im moment NICHT (kompliziert mit en passant)
 
   // wenn es jetzt noch ein zeichen gibt, muss es die start-spalte sein
   let startSpalte: number | undefined = undefined;
   if (zugnotation.length === 1) {
     startSpalte = spalten.indexOf(zugnotation[0]!);
-    if (startSpalte === -1) ungueltig(zugnotation, "Ungültige Start-Spalte.");
+    if (startSpalte === -1) ungueltig(original, "Ungültige Start-Spalte.");
     zugnotation = zugnotation.slice(1);
   }
   // mehr zeichen sind nicht erlaubt
-  if (zugnotation.length > 0) ungueltig(zugnotation, "Zu viele Zeichen.");
+  if (zugnotation.length > 0) ungueltig(original, "Zu viele Zeichen.");
 
   // die start-position muss aus dem aktuellen brett ermittelt werden,
   // z.B. "Sf3" => finde springer von der aktuellen farbe, der nach f3 ziehen kann
   // => wir loopen durch passende figuren (art + farbe) und testen ob der zug moeglich ist
+  console.log("[DEBUG] Notation", figur, ziel, istSchlag, startSpalte);
   for (let startPosition of positionenVonFigur(figur, status.brett)) {
     if (startSpalte !== undefined && startPosition.spalte !== startSpalte) continue;
     let zug: Zug = { figur, von: startPosition, nach: ziel };
@@ -97,7 +95,7 @@ function parseZug(zugnotation: string, status: Status): Zug {
     if (ok) return zug;
   }
   // wenn kein passendes startfeld gefunden wurde, ist die notation ungueltig
-  ungueltigAufgrundStatus(zugnotation, "Kein passendes Startfeld gefunden.");
+  ungueltigAufgrundStatus(original, "Kein passendes Startfeld gefunden.");
 }
 
 function positionenVonFigur(figur: Figur, brett: Brett): Position[] {
