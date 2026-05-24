@@ -137,3 +137,11 @@ function istKorrekterTurmZug(zug: Zug, brett: Brett): boolean {
   // TODO gib das weg wenn fertig
   return true;
 }
+
+function istKorrekterDameZug(zug: Zug, brett: Brett): boolean {
+  return istKorrekterTurmZug(zug, brett) || istKorrekterLaeuferzug(zug, brett);
+}
+
+function istKorrekterLaeuferzug(zug: Zug, brett: Brett) {
+  return true;
+}
