@@ -21,6 +21,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
   if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
+  if (zug.figur.art === "dame") return istKorrekterDameZug(zug, status.brett);
   return true;
 }
 
