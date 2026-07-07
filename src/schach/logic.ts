@@ -12,6 +12,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   if (status.amZug !== zug.figur.farbe) return false;
 
   // man darf seine eigene figur nicht schlagen
+  // dies verhindert auch gar nicht zu fahren!
   if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
 
   // das start-feld muss die angegebene figur enthalten
@@ -141,8 +142,44 @@ function istKorrekterDameZug(zug: Zug, brett: Brett): boolean {
   return istKorrekterTurmZug(zug, brett) || istKorrekterLaeuferzug(zug, brett);
 }
 
+// type Richtung = { reihe: number; spalte: number };
+
+// function findeRichtung(zug: Zug): Richtung {
+//   return {
+//     reihe: Math.sign(zug.nach.reihe - zug.von.reihe),
+//     spalte: Math.sign(zug.nach.spalte - zug.von.spalte),
+//   };
+// }
+
+type LaeuferRichtung = "nw" | "no" | "sw" | "so";
+
+function findeLaeuferRichtung(zug: Zug): LaeuferRichtung {
+  let spaltenDifferenz = zug.nach.spalte - zug.von.spalte;
+  let reihenDifferenz = zug.nach.reihe - zug.von.reihe;
+  if (spaltenDifferenz < 0 && reihenDifferenz < 0) return "nw";
+  if (spaltenDifferenz > 0 && reihenDifferenz < 0) return "no";
+  if (spaltenDifferenz < 0 && reihenDifferenz > 0) return "sw";
+  if (spaltenDifferenz > 0 && reihenDifferenz > 0) return "so";
+  throw Error("invalider zug");
+}
+
+function schrittInLaeuferRichtung(pos: Position, richtung: LaeuferRichtung): Position {
+  if (richtung === "nw") return { reihe: pos.reihe - 1, spalte: pos.spalte - 1 };
+  if (richtung === "no") return { reihe: pos.reihe - 1, spalte: pos.spalte + 1 };
+  if (richtung === "sw") return { reihe: pos.reihe + 1, spalte: pos.spalte - 1 };
+  if (richtung === "so") return { reihe: pos.reihe + 1, spalte: pos.spalte + 1 };
+  throw Error("invalider zug");
+}
+
 function istKorrekterLaeuferzug(zug: Zug, brett: Brett) {
   if (linksRechtsDistanz(zug) !== raufRunterDistanz(zug)) return false;
-  // TODO teste ob durch eine figur faehrt
+  let richtung = findeLaeuferRichtung(zug);
+  // wir gehen der reihe nach alle positionen zwischen start und zielfeld durch
+  let pos = schrittInLaeuferRichtung(zug.von, richtung);
+  while (!selbePosition(pos, zug.nach)) {
+    // wenn eine figur auf dem feld steht, faehrt der laeufer hindurch -> falsch
+    if (feld(pos, brett) !== undefined) return false;
+    pos = schrittInLaeuferRichtung(pos, richtung);
+  }
   return true;
 }
