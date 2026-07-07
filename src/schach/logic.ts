@@ -20,6 +20,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
 
   if (zug.figur.art === "bauer") return istKorrekterBauernZug(zug, status);
   if (zug.figur.art === "pferd") return istKorrekterPferdeZug(zug);
+  if (zug.figur.art === "laeufer") return istKorrekterLaeuferzug(zug, status.brett);
   if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
   if (zug.figur.art === "dame") return istKorrekterDameZug(zug, status.brett);
   return true;
@@ -42,7 +43,9 @@ function zugAnwenden(zug: Zug, { ...status }: Status): Status {
   if (raufRunterDistanz(zug) !== 2 || zug.figur.art !== "bauer") {
     status.enpassant = false;
   }
-  ändereAmZug(status);
+  // wenn schwarz am zug, kommt weiss an den zug und umgekehrt
+  if (status.amZug === "b") status.amZug = "w";
+  else status.amZug = "b";
   return status;
 }
 
@@ -54,11 +57,6 @@ function bauerUmwandeln(figur: UmwandlungsFigurArt, { ...status }: Status): Stat
   setzeFeld(bauernUmwandlung, brett, { art: figur, farbe: bauer.farbe });
   status.bauernUmwandlung = false;
   return status;
-}
-
-function ändereAmZug(status: Status) {
-  if (status.amZug === "b") status.amZug = "w";
-  else status.amZug = "b";
 }
 
 function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
@@ -144,5 +142,7 @@ function istKorrekterDameZug(zug: Zug, brett: Brett): boolean {
 }
 
 function istKorrekterLaeuferzug(zug: Zug, brett: Brett) {
+  if (linksRechtsDistanz(zug) !== raufRunterDistanz(zug)) return false;
+  // TODO teste ob durch eine figur faehrt
   return true;
 }
