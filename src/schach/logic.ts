@@ -142,14 +142,18 @@ function istKorrekterDameZug(zug: Zug, brett: Brett): boolean {
   return istKorrekterTurmZug(zug, brett) || istKorrekterLaeuferzug(zug, brett);
 }
 
-// type Richtung = { reihe: number; spalte: number };
+type Richtung = { reihe: number; spalte: number };
 
-// function findeRichtung(zug: Zug): Richtung {
-//   return {
-//     reihe: Math.sign(zug.nach.reihe - zug.von.reihe),
-//     spalte: Math.sign(zug.nach.spalte - zug.von.spalte),
-//   };
-// }
+function findeRichtung(zug: Zug): Richtung {
+  return {
+    reihe: Math.sign(zug.nach.reihe - zug.von.reihe),
+    spalte: Math.sign(zug.nach.spalte - zug.von.spalte),
+  };
+}
+
+function schrittInRichtung(pos: Position, richtung: Richtung): Position {
+  return { reihe: pos.reihe + richtung.reihe, spalte: pos.spalte + richtung.spalte };
+}
 
 type LaeuferRichtung = "nw" | "no" | "sw" | "so";
 
