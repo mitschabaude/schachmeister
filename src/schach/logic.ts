@@ -24,6 +24,7 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   if (zug.figur.art === "laeufer") return istKorrekterLaeuferzug(zug, status.brett);
   if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
   if (zug.figur.art === "dame") return istKorrekterDameZug(zug, status.brett);
+  if (zug.figur.art === "koenig") return istKorrekterKoenigZug(zug);
   return true;
 }
 
@@ -182,4 +183,11 @@ function koenigsFeld(farbe: Farbe, brett: Brett): Position {
   });
   if (pos === undefined) throw Error("Kein Koenig vorhanden?!");
   return pos;
+}
+
+function istKorrekterKoenigZug(zug: Zug): boolean {
+  if (Math.abs(raufRunterDistanz(zug)) < 2 && Math.abs(linksRechtsDistanz(zug)) < 2) {
+    return true;
+  }
+  return false;
 }
