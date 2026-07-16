@@ -1,9 +1,20 @@
 import type { Position, Figur, Feld } from "./types";
 
-export { assert, selbePosition, selbeFigur };
+export { assert, selbePosition, selbeFigur, assertError };
 
 function assert(condition: boolean, message: string): asserts condition {
   if (!condition) throw Error(message);
+}
+
+function assertError(fn: () => void, message: string) {
+  try {
+    fn();
+    assert(false, "Fehler: kein Fehler");
+  } catch (err: any) {
+    if (err.message === message) {
+      // gut
+    } else throw err;
+  }
 }
 
 function selbePosition(pos1: Position | false, pos2: Position): boolean {
