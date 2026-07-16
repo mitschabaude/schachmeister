@@ -132,16 +132,19 @@ function istKorrekterTurmZug(zug: Zug, brett: Brett): boolean {
   let bleibtReiheGleich = zug.von.reihe === zug.nach.reihe;
   let bleibtSpalteGleich = zug.von.spalte === zug.nach.spalte;
   if (!(bleibtReiheGleich || bleibtSpalteGleich)) return false;
-  //if ( TurmschlagtdurchFigur) return false
+  return schlaegtNichtDurchFigur(brett, zug);
+}
 
-  // TODO gib das weg wenn fertig
-  return true;
+function istKorrekterLaeuferzug(zug: Zug, brett: Brett) {
+  if (linksRechtsDistanz(zug) !== raufRunterDistanz(zug)) return false;
+  return schlaegtNichtDurchFigur(brett, zug);
 }
 
 function istKorrekterDameZug(zug: Zug, brett: Brett): boolean {
   return istKorrekterTurmZug(zug, brett) || istKorrekterLaeuferzug(zug, brett);
 }
 
+/** reihe und spalte sind -1, 0 oder 1 */
 type Richtung = { reihe: number; spalte: number };
 
 function findeRichtung(zug: Zug): Richtung {
@@ -160,14 +163,9 @@ function schlaegtNichtDurchFigur(brett: Brett, zug: Zug): boolean {
   // wir gehen der reihe nach alle positionen zwischen start und zielfeld durch
   let pos = schrittInRichtung(zug.von, richtung);
   while (!selbePosition(pos, zug.nach)) {
-    // wenn eine figur auf dem feld steht, faehrt der laeufer hindurch -> falsch
+    // wenn eine figur auf dem feld steht, faehrt die figur hindurch -> falsch
     if (feld(pos, brett) !== undefined) return false;
     pos = schrittInRichtung(pos, richtung);
   }
   return true;
-}
-
-function istKorrekterLaeuferzug(zug: Zug, brett: Brett) {
-  if (linksRechtsDistanz(zug) !== raufRunterDistanz(zug)) return false;
-  return schlaegtNichtDurchFigur(brett, zug);
 }
