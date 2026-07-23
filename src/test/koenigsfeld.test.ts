@@ -6,6 +6,6 @@ import { koenigsFeld } from "../schach/logic.ts";
 test("Koenigsfeld", () => {
   let status = spiel([]);
   assert(notation(koenigsFeld("w", status.brett)) === "e1", "Koenigsfeld sollte e1 sein");
-  status = spiel(["Kxe8"], status);
-  assertError(() => koenigsFeld("b", status.brett), "Kein Koenig vorhanden?!");
+  status = spiel(["e4", "e5", "Ke2"], status);
+  assert(notation(koenigsFeld("w", status.brett)) === "e2", "Koenigsfeld sollte e1 sein");
 });

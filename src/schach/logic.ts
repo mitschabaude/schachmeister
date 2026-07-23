@@ -1,5 +1,5 @@
 import type { Status, Zug, Position, Brett, Feld, Farbe, UmwandlungsFigurArt, Figur } from "./types";
-import { selbeFigur, selbePosition } from "./utils.ts";
+import { figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
 
 export { istKorrekterZug, zugAnwenden, bauerUmwandeln, koenigsFeld };
 
@@ -172,15 +172,10 @@ function schlaegtNichtDurchFigur(brett: Brett, zug: Zug): boolean {
 }
 
 function koenigsFeld(farbe: Farbe, brett: Brett): Position {
-  let koenig: Figur = { art: "koenig", farbe };
-  let pos: undefined | Position = undefined;
-  brett.forEach((reihe, i) => {
-    reihe.forEach((feld, j) => {
-      if (selbeFigur(feld, koenig)) {
-        pos = { reihe: i, spalte: j };
-      }
-    });
-  });
+  let koenigMitPosition = figurenMitPositionen(farbe, brett).find(
+    (figurMitPosition) => figurMitPosition.figur.art === "koenig",
+  );
+  let pos = koenigMitPosition?.pos;
   if (pos === undefined) throw Error("Kein Koenig vorhanden?!");
   return pos;
 }
