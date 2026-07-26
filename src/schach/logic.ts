@@ -1,9 +1,17 @@
 import type { Status, Zug, Position, Brett, Feld, Farbe, UmwandlungsFigurArt, Figur } from "./types";
-import { figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
+import { andereFarbe, figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
 
-export { istKorrekterZug, zugAnwenden, bauerUmwandeln, koenigsFeld };
+export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld };
 
-function istKorrekterZug(zug: Zug, status: Status): boolean {
+function istKorrekterZug(zug: Zug, status: Status) {
+  if (!istKorrekterZugOhneSchach(zug, status)) return false;
+  let amZug = status.amZug;
+  status = zugAnwenden(zug, status);
+  if (istSchach(amZug, status)) return false;
+  return true;
+}
+
+function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
   let { brett } = status;
   // kein zug wenn bauernumwandlung
   if (status.bauernUmwandlung !== false) return false;
@@ -28,8 +36,9 @@ function istKorrekterZug(zug: Zug, status: Status): boolean {
   return true;
 }
 
-function zugAnwenden(zug: Zug, { ...status }: Status): Status {
-  console.log("[DEBUG] Zug anwenden", zug);
+function zugAnwenden(zug: Zug, status: Status): Status {
+  status = structuredClone(status);
+  console.log("[DEBUG] Zug anwenden", status.amZug, zug);
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
@@ -182,4 +191,16 @@ function koenigsFeld(farbe: Farbe, brett: Brett): Position {
 
 function istKorrekterKoenigZug(zug: Zug): boolean {
   return raufRunterDistanz(zug) < 2 && linksRechtsDistanz(zug) < 2;
+}
+
+function istSchach(farbe: Farbe, status: Status): boolean {
+  let istSchach = false;
+  let koenig = koenigsFeld(farbe, status.brett);
+  figurenMitPositionen(andereFarbe(farbe), status.brett).forEach((figur) => {
+    let zug: Zug = { figur: figur.figur, von: figur.pos, nach: koenig };
+    let istKorrekt = istKorrekterZugOhneSchach(zug, status);
+    if (istKorrekt) istSchach = true;
+  });
+  console.log("istSchach", istSchach);
+  return istSchach;
 }

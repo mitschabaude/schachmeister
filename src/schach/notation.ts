@@ -3,7 +3,7 @@
  *
  * Dies ermoeglicht uns, einen Spielstand konzis durch eine Abfolge von Zuegen in Notation zu erzeugen.
  */
-import { istKorrekterZug, zugAnwenden } from "./logic.ts";
+import { istKorrekterZugOhneSchach, zugAnwenden } from "./logic.ts";
 import {
   type Zug,
   type FigurArt,
@@ -89,7 +89,7 @@ function parseZug(zugnotation: string, status: Status): Zug {
       von: { reihe, spalte: 4 },
       nach: { reihe, spalte },
     };
-    let ok = istKorrekterZug(zug, status);
+    let ok = istKorrekterZugOhneSchach(zug, status);
     if (!ok) ungueltigAufgrundStatus(original, "Rochade ist nicht erlaubt.");
     return zug;
   }
@@ -143,7 +143,7 @@ function parseZug(zugnotation: string, status: Status): Zug {
   for (let startPosition of positionenVonFigur(figur, status.brett)) {
     if (startSpalte !== undefined && startPosition.spalte !== startSpalte) continue;
     let zug: Zug = { figur, von: startPosition, nach: ziel };
-    let ok = istKorrekterZug(zug, status);
+    let ok = istKorrekterZugOhneSchach(zug, status);
     if (ok) return zug;
   }
   // wenn kein passendes startfeld gefunden wurde, ist die notation ungueltig

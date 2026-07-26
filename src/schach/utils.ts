@@ -1,6 +1,6 @@
-import type { Position, Figur, Feld, Brett, Farbe } from "./types";
+import type { Position, Figur, Brett, Farbe } from "./types";
 
-export { assert, selbePosition, selbeFigur, assertError, figurenMitPositionen };
+export { assert, selbePosition, selbeFigur, assertError, figurenMitPositionen, andereFarbe };
 
 function assert(condition: boolean, message: string): asserts condition {
   if (!condition) throw Error(message);
@@ -42,4 +42,8 @@ function figurenMitPositionen(farbe: Farbe, brett: Brett): FigurMitPosition[] {
   });
 
   return figuren;
+}
+
+function andereFarbe(farbe: Farbe) {
+  return farbe === "b" ? "w" : "b";
 }
