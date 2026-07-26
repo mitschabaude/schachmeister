@@ -181,8 +181,5 @@ function koenigsFeld(farbe: Farbe, brett: Brett): Position {
 }
 
 function istKorrekterKoenigZug(zug: Zug): boolean {
-  if (Math.abs(raufRunterDistanz(zug)) < 2 && Math.abs(linksRechtsDistanz(zug)) < 2) {
-    return true;
-  }
-  return false;
+  return raufRunterDistanz(zug) < 2 && linksRechtsDistanz(zug) < 2;
 }
