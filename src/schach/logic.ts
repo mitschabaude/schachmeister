@@ -54,9 +54,12 @@ function zugAnwenden(zug: Zug, status: Status): Status {
   if (raufRunterDistanz(zug) !== 2 || zug.figur.art !== "bauer") {
     status.enpassant = false;
   }
+  status.istSchach = istSchach(zug.figur.farbe, status);
+  status.istSchachmattOderPatt = istSchachmattOderPatt(zug.figur.farbe, status);
   // wenn schwarz am zug, kommt weiss an den zug und umgekehrt
   if (status.amZug === "b") status.amZug = "w";
   else status.amZug = "b";
+  // wenn nach dem
   return status;
 }
 
@@ -203,4 +206,33 @@ function istSchach(farbe: Farbe, status: Status): boolean {
   });
   console.log("istSchach", istSchach);
   return istSchach;
+}
+
+function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmatt" | "patt" {
+  let istSchachmattOderPatt: false | "schachmatt" | "patt" = "schachmatt";
+  figurenMitPositionen(farbe, status.brett).forEach((figur) => {
+    if (!istSchachmattOderPatt) return;
+    for (let reihe = 0; reihe < 8; reihe++) {
+      for (let spalte = 0; spalte < 8; spalte++) {
+        let zug: Zug = {
+          figur: figur.figur,
+          von: figur.pos,
+          nach: { reihe, spalte },
+        };
+        let istKorrekt = istKorrekterZug(zug, status);
+        if (istKorrekt) {
+          istSchachmattOderPatt = false;
+          return;
+        }
+      }
+    }
+  });
+  if (istSchachmattOderPatt == "schachmatt") {
+    if (status.istSchach == true) {
+      istSchachmattOderPatt = "schachmatt";
+    } else {
+      istSchachmattOderPatt = "patt";
+    }
+  }
+  return istSchachmattOderPatt;
 }

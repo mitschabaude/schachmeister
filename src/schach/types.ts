@@ -38,6 +38,10 @@ type Status = {
   brett: Brett;
   /** farbe die am zug ist */
   amZug: Farbe;
+  /** ist gerade fuer die aktuelle farbe schach? */
+  istSchach: boolean;
+  /** ist gerade fuer die aktuelle farbe schachmatt? */
+  istSchachmattOderPatt: false | "schachmatt" | "patt";
   /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
   bauernUmwandlung: false | Position;
   enpassant: false | Position;
@@ -104,6 +108,8 @@ const startBrett: Brett = [
 const startStatus: Status = {
   brett: startBrett,
   amZug: "w",
+  istSchach: false,
+  istSchachmattOderPatt: false,
   bauernUmwandlung: false,
   enpassant: false,
 };
