@@ -1,4 +1,14 @@
-import type { Status, Zug, Position, Brett, Feld, Farbe, UmwandlungsFigurArt, Figur } from "./types";
+import type {
+  Status,
+  Zug,
+  Position,
+  Brett,
+  Feld,
+  Farbe,
+  UmwandlungsFigurArt,
+  Figur,
+  FigurMitPosition,
+} from "./types";
 import { andereFarbe, figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
 
 export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld };
@@ -235,4 +245,18 @@ function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmat
     }
   }
   return istSchachmattOderPatt;
+}
+
+function moeglicheFelder(status: Status, figurMitPosition: FigurMitPosition): Position[] {
+  let korrektePositionen: Position[] = [];
+  for (let reihe = 0; reihe < 8; reihe++) {
+    for (let spalte = 0; spalte < 8; spalte++) {
+      let zug: Zug = { figur: figurMitPosition.figur, von: figurMitPosition.pos, nach: { reihe, spalte } };
+      let istKorrekt = istKorrekterZug(zug, status);
+      if (istKorrekt) {
+        korrektePositionen.push({ reihe, spalte });
+      }
+    }
+  }
+  return korrektePositionen;
 }

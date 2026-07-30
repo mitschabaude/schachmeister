@@ -1,4 +1,4 @@
-import type { Position, Figur, Brett, Farbe } from "./types";
+import type { Position, Figur, Brett, Farbe, FigurMitPosition } from "./types";
 
 export { assert, selbePosition, selbeFigur, assertError, figurenMitPositionen, andereFarbe };
 
@@ -26,8 +26,6 @@ function selbeFigur(feld: Figur | undefined, figur: Figur): boolean {
   if (feld === undefined) return false;
   return feld.art === figur.art && feld.farbe === figur.farbe;
 }
-
-type FigurMitPosition = { figur: Figur; pos: Position };
 
 function figurenMitPositionen(farbe: Farbe, brett: Brett): FigurMitPosition[] {
   let figuren: FigurMitPosition[] = [];

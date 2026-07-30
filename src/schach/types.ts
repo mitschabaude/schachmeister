@@ -1,4 +1,15 @@
-export type { Farbe, Figur, FigurArt, Brett, Status, Zug, Position, Feld, UmwandlungsFigurArt };
+export type {
+  Farbe,
+  Figur,
+  FigurArt,
+  Brett,
+  Status,
+  Zug,
+  Position,
+  Feld,
+  UmwandlungsFigurArt,
+  FigurMitPosition,
+};
 export { startBrett, startStatus };
 
 type FigurArt = "bauer" | "laeufer" | "pferd" | "turm" | "dame" | "koenig";
@@ -57,6 +68,8 @@ type Zug = {
 };
 
 type UmwandlungsFigurArt = "laeufer" | "pferd" | "turm" | "dame";
+
+type FigurMitPosition = { figur: Figur; pos: Position };
 
 const startBrett: Brett = [
   [
