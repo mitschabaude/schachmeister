@@ -11,24 +11,27 @@ import type {
 } from "./types";
 import { andereFarbe, figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
 
-export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld };
+export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld, istSchach };
 
 function istKorrekterZug(zug: Zug, status: Status) {
-  if (!istKorrekterZugOhneSchach(zug, status)) return false;
-  let amZug = status.amZug;
-  status = zugAnwenden(zug, status);
-  if (istSchach(amZug, status)) return false;
-  return true;
-}
-
-function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
-  let { brett } = status;
   // kein zug wenn bauernumwandlung
   if (status.bauernUmwandlung !== false) return false;
 
   // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
 
+  // nur korrekte zuege je nach figur
+  if (!istKorrekterZugOhneSchach(zug, status)) return false;
+
+  // man darf nicht so fahren, dass man danach im schach steht
+  let amZug = status.amZug;
+  status = zugAnwendenOhneSchach(zug, status);
+  if (istSchach(amZug, status)) return false;
+  return true;
+}
+
+function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
+  let { brett } = status;
   // man darf seine eigene figur nicht schlagen
   // dies verhindert auch gar nicht zu fahren!
   if (zug.figur.farbe === zielFeld(zug, brett)?.farbe) return false;
@@ -47,6 +50,13 @@ function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
 }
 
 function zugAnwenden(zug: Zug, status: Status): Status {
+  status = zugAnwendenOhneSchach(zug, status);
+  status.istSchach = istSchach(status.amZug, status);
+  status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
+  return status;
+}
+
+function zugAnwendenOhneSchach(zug: Zug, status: Status): Status {
   status = structuredClone(status);
   console.log("[DEBUG] Zug anwenden", status.amZug, zug);
   if (zug.figur.art == "bauer") {
@@ -64,8 +74,6 @@ function zugAnwenden(zug: Zug, status: Status): Status {
   if (raufRunterDistanz(zug) !== 2 || zug.figur.art !== "bauer") {
     status.enpassant = false;
   }
-  status.istSchach = istSchach(zug.figur.farbe, status);
-  status.istSchachmattOderPatt = istSchachmattOderPatt(zug.figur.farbe, status);
   // wenn schwarz am zug, kommt weiss an den zug und umgekehrt
   if (status.amZug === "b") status.amZug = "w";
   else status.amZug = "b";
@@ -107,20 +115,22 @@ function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
       }
     }
   }
-  if (zug.von.reihe + 2 == zug.nach.reihe) {
-    if (zug.figur.farbe == "b") {
-      if (zug.von.reihe == 1) {
-        if (zug.von.spalte == zug.nach.spalte) return true;
-      }
-    }
-  }
-  if (zug.von.reihe - 2 == zug.nach.reihe) {
-    if (zug.figur.farbe == "w") {
-      if (zug.von.reihe == 6) {
-        if (zug.von.spalte == zug.nach.spalte) return true;
-      }
-    }
-  }
+  if (
+    zug.von.reihe + 2 == zug.nach.reihe &&
+    zug.figur.farbe == "b" &&
+    zug.von.reihe == 1 &&
+    zug.von.spalte == zug.nach.spalte &&
+    zielFeld(zug, brett) == undefined
+  )
+    return true;
+  if (
+    zug.von.reihe - 2 == zug.nach.reihe &&
+    zug.figur.farbe == "w" &&
+    zug.von.reihe == 6 &&
+    zug.von.spalte == zug.nach.spalte &&
+    zielFeld(zug, brett) == undefined
+  )
+    return true;
   return false;
 }
 
@@ -220,6 +230,7 @@ function istSchach(farbe: Farbe, status: Status): boolean {
 
 function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmatt" | "patt" {
   let istSchachmattOderPatt: false | "schachmatt" | "patt" = "schachmatt";
+  let moeglicherZug: Zug | undefined = undefined;
   figurenMitPositionen(farbe, status.brett).forEach((figur) => {
     if (!istSchachmattOderPatt) return;
     for (let reihe = 0; reihe < 8; reihe++) {
@@ -231,19 +242,18 @@ function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmat
         };
         let istKorrekt = istKorrekterZug(zug, status);
         if (istKorrekt) {
+          moeglicherZug = zug;
           istSchachmattOderPatt = false;
           return;
         }
       }
     }
   });
-  if (istSchachmattOderPatt == "schachmatt") {
-    if (status.istSchach == true) {
-      istSchachmattOderPatt = "schachmatt";
-    } else {
-      istSchachmattOderPatt = "patt";
-    }
+  console.log({ istSchach: status.istSchach, istSchachmattOderPatt, moeglicherZug });
+  if (istSchachmattOderPatt === "schachmatt" && !status.istSchach) {
+    istSchachmattOderPatt = "patt";
   }
+  console.log({ istSchachmattOderPatt });
   return istSchachmattOderPatt;
 }
 
