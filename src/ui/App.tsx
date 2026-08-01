@@ -25,7 +25,7 @@ function App() {
   let [status, setStatus] = useState<Status>(startStatus);
 
   function onMove(zug: Zug) {
-    if (istKorrekterZug(zug, status)) {
+    if (status.bauernUmwandlung === false && istKorrekterZug(zug, status)) {
       setStatus(zugAnwenden(zug, status));
     } else {
       console.log("Ungültiger Zug", zug);

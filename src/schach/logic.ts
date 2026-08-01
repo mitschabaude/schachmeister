@@ -14,9 +14,6 @@ import { andereFarbe, figurenMitPositionen, selbeFigur, selbePosition } from "./
 export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld, istSchach };
 
 function istKorrekterZug(zug: Zug, status: Status) {
-  // kein zug wenn bauernumwandlung
-  if (status.bauernUmwandlung !== false) return false;
-
   // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
 
@@ -81,13 +78,16 @@ function zugAnwendenOhneSchach(zug: Zug, status: Status): Status {
   return status;
 }
 
-function bauerUmwandeln(figur: UmwandlungsFigurArt, { ...status }: Status): Status {
+function bauerUmwandeln(figur: UmwandlungsFigurArt, status: Status): Status {
+  status = structuredClone(status);
   let { brett, bauernUmwandlung } = status;
   if (bauernUmwandlung === false) return status;
   let bauer = feld(bauernUmwandlung, brett);
   if (bauer === undefined) throw Error("invalider status: bauernumwandlung von leerem feld");
   setzeFeld(bauernUmwandlung, brett, { art: figur, farbe: bauer.farbe });
   status.bauernUmwandlung = false;
+  status.istSchach = istSchach(status.amZug, status);
+  status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
   return status;
 }
 
