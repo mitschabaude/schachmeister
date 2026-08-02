@@ -55,7 +55,6 @@ function zugAnwenden(zug: Zug, status: Status): Status {
 
 function zugAnwendenOhneSchach(zug: Zug, status: Status): Status {
   status = structuredClone(status);
-  console.log("[DEBUG] Zug anwenden", status.amZug, zug);
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
@@ -224,7 +223,6 @@ function istSchach(farbe: Farbe, status: Status): boolean {
     let istKorrekt = istKorrekterZugOhneSchach(zug, status);
     if (istKorrekt) istSchach = true;
   });
-  console.log("istSchach", istSchach);
   return istSchach;
 }
 
@@ -249,11 +247,9 @@ function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmat
       }
     }
   });
-  console.log({ istSchach: status.istSchach, istSchachmattOderPatt, moeglicherZug });
   if (istSchachmattOderPatt === "schachmatt" && !status.istSchach) {
     istSchachmattOderPatt = "patt";
   }
-  console.log({ istSchachmattOderPatt });
   return istSchachmattOderPatt;
 }
 
