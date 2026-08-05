@@ -56,6 +56,7 @@ type Status = {
   /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
   bauernUmwandlung: false | Position;
   enpassant: false | Position;
+  rochade: Rochade;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -66,6 +67,12 @@ type Zug = {
   von: Position;
   nach: Position;
 };
+
+type Rochade = { weisseRochade: WeisseRochade; schwarzeRochade: SchwarzeRochade };
+
+type WeisseRochade = { linkeRochade: Position | undefined; rechteRochade: Position | undefined };
+
+type SchwarzeRochade = { linkeRochade: Position | undefined; rechteRochade: Position | undefined };
 
 type UmwandlungsFigurArt = "laeufer" | "pferd" | "turm" | "dame";
 
@@ -125,4 +132,26 @@ const startStatus: Status = {
   istSchachmattOderPatt: false,
   bauernUmwandlung: false,
   enpassant: false,
+  rochade: {
+    weisseRochade: {
+      linkeRochade: {
+        reihe: 7,
+        spalte: 2,
+      },
+      rechteRochade: {
+        reihe: 7,
+        spalte: 6,
+      },
+    },
+    schwarzeRochade: {
+      linkeRochade: {
+        reihe: 0,
+        spalte: 2,
+      },
+      rechteRochade: {
+        reihe: 0,
+        spalte: 6,
+      },
+    },
+  },
 };

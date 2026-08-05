@@ -42,7 +42,7 @@ function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
   if (zug.figur.art === "laeufer") return istKorrekterLaeuferzug(zug, status.brett);
   if (zug.figur.art === "turm") return istKorrekterTurmZug(zug, status.brett);
   if (zug.figur.art === "dame") return istKorrekterDameZug(zug, status.brett);
-  if (zug.figur.art === "koenig") return istKorrekterKoenigZug(zug);
+  if (zug.figur.art === "koenig") return istKorrekterKoenigZug(zug, status);
   return true;
 }
 
@@ -211,19 +211,26 @@ function koenigsFeld(farbe: Farbe, brett: Brett): Position {
   return pos;
 }
 
-function istKorrekterKoenigZug(zug: Zug): boolean {
+function istKorrekterKoenigZug(zug: Zug, status: Status): boolean {
+  if (istKorrekteRochade(zug, status)) {
+    return true;
+  }
   return raufRunterDistanz(zug) < 2 && linksRechtsDistanz(zug) < 2;
 }
 
-function istSchach(farbe: Farbe, status: Status): boolean {
+function istSchachAufFeld(position: Position, farbe: Farbe, status: Status): boolean {
   let istSchach = false;
-  let koenig = koenigsFeld(farbe, status.brett);
   figurenMitPositionen(andereFarbe(farbe), status.brett).forEach((figur) => {
-    let zug: Zug = { figur: figur.figur, von: figur.pos, nach: koenig };
+    let zug: Zug = { figur: figur.figur, von: figur.pos, nach: position };
     let istKorrekt = istKorrekterZugOhneSchach(zug, status);
     if (istKorrekt) istSchach = true;
   });
   return istSchach;
+}
+
+function istSchach(farbe: Farbe, status: Status): boolean {
+  let koenig = koenigsFeld(farbe, status.brett);
+  return istSchachAufFeld(koenig, farbe, status);
 }
 
 function istSchachmattOderPatt(farbe: Farbe, status: Status): false | "schachmatt" | "patt" {
@@ -265,4 +272,84 @@ function moeglicheFelder(status: Status, figurMitPosition: FigurMitPosition): Po
     }
   }
   return korrektePositionen;
+}
+
+function istKorrekteRochade(zug: Zug, status: Status): boolean {
+  console.log("rochade", zug, status.rochade);
+  if (zug.figur.farbe == "w") {
+    if (status.rochade.weisseRochade.linkeRochade == zug.nach) {
+      if (
+        !istSchach("w", status) &&
+        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "w", status)
+      ) {
+        if (
+          schlaegtNichtDurchFigur(status.brett, zug) &&
+          schlaegtNichtDurchFigur(status.brett, {
+            figur: { art: "turm", farbe: "w" },
+            von: { reihe: 7, spalte: 0 },
+            nach: { reihe: 7, spalte: 3 },
+          })
+        ) {
+          return true;
+        }
+      }
+    }
+    // console.log("rochade weiss", status.rochade.weisseRochade.rechteRochade, zug.nach);
+    if (selbePosition(status.rochade.weisseRochade.rechteRochade ?? false, zug.nach)) {
+      console.log("weiss,rechte rochade");
+      if (
+        !istSchach("w", status) &&
+        !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "w", status)
+      ) {
+        console.log("weiss,rechte rochade 2");
+
+        if (
+          schlaegtNichtDurchFigur(status.brett, zug) &&
+          schlaegtNichtDurchFigur(status.brett, {
+            figur: { art: "turm", farbe: "w" },
+            von: { reihe: 7, spalte: 7 },
+            nach: { reihe: 7, spalte: 5 },
+          })
+        ) {
+          return true;
+        }
+      }
+    }
+  } else {
+    if (status.rochade.schwarzeRochade.linkeRochade == zug.nach) {
+      if (
+        !istSchach("b", status) &&
+        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "b", status)
+      ) {
+        if (
+          schlaegtNichtDurchFigur(status.brett, zug) &&
+          schlaegtNichtDurchFigur(status.brett, {
+            figur: { art: "turm", farbe: "w" },
+            von: { reihe: 0, spalte: 0 },
+            nach: { reihe: 0, spalte: 3 },
+          })
+        ) {
+          return true;
+        }
+      }
+    }
+    if (status.rochade.schwarzeRochade.rechteRochade == zug.nach) {
+      if (
+        !istSchach("b", status) &&
+        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "b", status)
+      ) {
+        if (
+          schlaegtNichtDurchFigur(status.brett, zug) &&
+          schlaegtNichtDurchFigur(status.brett, {
+            figur: { art: "turm", farbe: "w" },
+            von: { reihe: 0, spalte: 7 },
+            nach: { reihe: 0, spalte: 5 },
+          })
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
