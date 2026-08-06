@@ -50,11 +50,63 @@ function zugAnwenden(zug: Zug, status: Status): Status {
   status = zugAnwendenOhneSchach(zug, status);
   status.istSchach = istSchach(status.amZug, status);
   status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
+  if (zug.figur.art == "koenig") {
+    if (zug.figur.farbe == "w") {
+      status.rochade.weisseRochade.linkeRochade = undefined;
+      status.rochade.weisseRochade.rechteRochade = undefined;
+    } else {
+      status.rochade.schwarzeRochade.linkeRochade = undefined;
+      status.rochade.schwarzeRochade.rechteRochade = undefined;
+    }
+  }
+  if (selbePosition(zug.von, { reihe: 0, spalte: 0 }) || selbePosition(zug.nach, { reihe: 0, spalte: 0 })) {
+    status.rochade.schwarzeRochade.linkeRochade = undefined;
+  }
+  if (selbePosition(zug.von, { reihe: 0, spalte: 7 }) || selbePosition(zug.nach, { reihe: 0, spalte: 7 })) {
+    status.rochade.schwarzeRochade.rechteRochade = undefined;
+  }
+  if (selbePosition(zug.von, { reihe: 7, spalte: 0 }) || selbePosition(zug.nach, { reihe: 7, spalte: 0 })) {
+    status.rochade.weisseRochade.linkeRochade = undefined;
+  }
+  if (selbePosition(zug.von, { reihe: 7, spalte: 7 }) || selbePosition(zug.nach, { reihe: 7, spalte: 7 })) {
+    status.rochade.weisseRochade.rechteRochade = undefined;
+  }
   return status;
 }
 
 function zugAnwendenOhneSchach(zug: Zug, status: Status): Status {
   status = structuredClone(status);
+  let { weisseRochade, schwarzeRochade } = status.rochade;
+  console.log(0);
+  if (istKorrekteRochade(zug, status)) {
+    console.log(1);
+    if (zug.figur.art == "koenig") {
+      console.log(2);
+      if (weisseRochade.linkeRochade !== undefined && selbePosition(zug.nach, weisseRochade.linkeRochade)) {
+        status.brett[7][0] = undefined;
+        status.brett[7][3] = { art: "turm", farbe: "w" };
+      }
+      if (weisseRochade.rechteRochade !== undefined && selbePosition(zug.nach, weisseRochade.rechteRochade)) {
+        console.log(3);
+        status.brett[7][7] = undefined;
+        status.brett[7][5] = { art: "turm", farbe: "w" };
+      }
+      if (
+        schwarzeRochade.linkeRochade !== undefined &&
+        selbePosition(zug.nach, schwarzeRochade.linkeRochade)
+      ) {
+        status.brett[0][0] = undefined;
+        status.brett[0][3] = { art: "turm", farbe: "b" };
+      }
+      if (
+        schwarzeRochade.rechteRochade !== undefined &&
+        selbePosition(zug.nach, schwarzeRochade.rechteRochade)
+      ) {
+        status.brett[0][7] = undefined;
+        status.brett[0][5] = { art: "turm", farbe: "b" };
+      }
+    }
+  }
   if (zug.figur.art == "bauer") {
     if (zug.figur.farbe == "b" && zug.nach.reihe == 7) status.bauernUmwandlung = zug.nach;
     if (zug.figur.farbe == "w" && zug.nach.reihe == 0) status.bauernUmwandlung = zug.nach;
@@ -277,10 +329,10 @@ function moeglicheFelder(status: Status, figurMitPosition: FigurMitPosition): Po
 function istKorrekteRochade(zug: Zug, status: Status): boolean {
   console.log("rochade", zug, status.rochade);
   if (zug.figur.farbe == "w") {
-    if (status.rochade.weisseRochade.linkeRochade == zug.nach) {
+    if (selbePosition(status.rochade.weisseRochade.linkeRochade ?? false, zug.nach)) {
       if (
         !istSchach("w", status) &&
-        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "w", status)
+        !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "w", status)
       ) {
         if (
           schlaegtNichtDurchFigur(status.brett, zug) &&
@@ -316,10 +368,10 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
       }
     }
   } else {
-    if (status.rochade.schwarzeRochade.linkeRochade == zug.nach) {
+    if (selbePosition(status.rochade.schwarzeRochade.linkeRochade ?? false, zug.nach)) {
       if (
         !istSchach("b", status) &&
-        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "b", status)
+        !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "b", status)
       ) {
         if (
           schlaegtNichtDurchFigur(status.brett, zug) &&
@@ -333,10 +385,10 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
         }
       }
     }
-    if (status.rochade.schwarzeRochade.rechteRochade == zug.nach) {
+    if (selbePosition(status.rochade.schwarzeRochade.rechteRochade ?? false, zug.nach)) {
       if (
         !istSchach("b", status) &&
-        istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "b", status)
+        !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "b", status)
       ) {
         if (
           schlaegtNichtDurchFigur(status.brett, zug) &&
