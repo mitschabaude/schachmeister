@@ -405,3 +405,43 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
   }
   return false;
 }
+
+/*
+K vs K                     => tote Stellung
+K + laeufer vs K           => tote Stellung
+K + pferd vs K             => tote Stellung
+
+K + pferd + pferd vs K     => NICHT tot
+
+K + laeufer vs
+K + laeufer,
+beide gleiche Feldfarbe    => tot
+K + laeufer + laeufer, beide gleiche Feldfarbe vs
+K => tot
+
+K + laeufer vs
+K + laeufer,
+verschiedene Feldfarben    => NICHT notwendigerweise tot
+K + laeufer + laeufer, verschiedene Feldfarben vs
+K => NICHT tot
+
+K + pferd vs K + bauer     => NICHT tot
+K + laeufer vs K + pferd   => NICHT tot
+*/
+function istToteStellung(status: Status) {
+  if (
+    figurenMitPositionen("w", status.brett).length == 1 &&
+    figurenMitPositionen("b", status.brett).length == 1
+  ) {
+    return true;
+  }
+  if (
+    figurenMitPositionen("w", status.brett).some((figur) => {
+      if (figur.figur.art == "bauer" || figur.figur.art == "dame" || figur.figur.art == "turm") {
+        return true;
+      }
+    })
+  ) {
+    return true;
+  }
+}
