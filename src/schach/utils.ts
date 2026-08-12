@@ -1,6 +1,15 @@
 import type { Position, Figur, Brett, Farbe, FigurMitPosition } from "./types";
 
-export { assert, selbePosition, selbeFigur, assertError, figurenMitPositionen, andereFarbe };
+export {
+  assert,
+  selbePosition,
+  selbeFigur,
+  assertError,
+  figurenMitPositionen,
+  andereFarbe,
+  arrayRemove,
+  feldFarbe,
+};
 
 function assert(condition: boolean, message: string): asserts condition {
   if (!condition) throw Error(message);
@@ -44,4 +53,16 @@ function figurenMitPositionen(farbe: Farbe, brett: Brett): FigurMitPosition[] {
 
 function andereFarbe(farbe: Farbe) {
   return farbe === "b" ? "w" : "b";
+}
+
+function arrayRemove<T>(arr: T[], bedingung: (t: T) => boolean) {
+  let i = arr.findIndex(bedingung);
+  // wenn kein element mit der bedingung existiert, passiert nichts
+  if (i == -1) return;
+  arr.splice(i, 1);
+}
+
+function feldFarbe(pos: Position): Farbe {
+  if ((pos.reihe + pos.spalte) % 2 == 0) return "w";
+  else return "b";
 }

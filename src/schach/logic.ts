@@ -9,7 +9,14 @@ import type {
   Figur,
   FigurMitPosition,
 } from "./types";
-import { andereFarbe, figurenMitPositionen, selbeFigur, selbePosition } from "./utils.ts";
+import {
+  andereFarbe,
+  arrayRemove,
+  feldFarbe,
+  figurenMitPositionen,
+  selbeFigur,
+  selbePosition,
+} from "./utils.ts";
 
 export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld, istSchach };
 
@@ -429,19 +436,42 @@ K + pferd vs K + bauer     => NICHT tot
 K + laeufer vs K + pferd   => NICHT tot
 */
 function istToteStellung(status: Status) {
-  if (
-    figurenMitPositionen("w", status.brett).length == 1 &&
-    figurenMitPositionen("b", status.brett).length == 1
-  ) {
+  let figW = figurenMitPositionen("w", status.brett);
+  let figB = figurenMitPositionen("b", status.brett);
+  if (figW.length == 1 && figB.length == 1) {
     return true;
   }
   if (
-    figurenMitPositionen("w", status.brett).some((figur) => {
-      if (figur.figur.art == "bauer" || figur.figur.art == "dame" || figur.figur.art == "turm") {
-        return true;
-      }
-    })
+    figW.some((figur) => figur.figur.art == "bauer" || figur.figur.art == "dame" || figur.figur.art == "turm")
   ) {
+    return false;
+  }
+  if (
+    figB.some((figur) => figur.figur.art == "bauer" || figur.figur.art == "dame" || figur.figur.art == "turm")
+  ) {
+    return false;
+  }
+  if ((figW.length == 1 && figB.length == 2) || (figB.length == 1 && figW.length == 2)) {
     return true;
   }
+  let obAlleWeiss: boolean = true;
+  let obAlleSchwarz: boolean = true;
+  let laeuferB = figB.filter((figur) => figur.figur.art == "laeufer");
+  let laeuferW = figW.filter((figur) => figur.figur.art == "laeufer");
+  let laeufer = laeuferW.concat(laeuferB);
+  laeufer.forEach((pos) => {
+    if (feldFarbe(pos.pos) == "b") {
+      let obAlleWeiss = false;
+    }
+  });
+
+  laeufer.forEach((pos) => {
+    if (feldFarbe(pos.pos) == "w") {
+      let obAlleSchwarz = false;
+    }
+  });
+  if (obAlleSchwarz || obAlleWeiss) {
+    return true;
+  }
+  return false;
 }
