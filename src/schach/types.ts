@@ -57,6 +57,7 @@ type Status = {
   bauernUmwandlung: false | Position;
   enpassant: false | Position;
   rochade: Rochade;
+  istBeendet: false | "schachmatt" | "patt" | "tote-stellung";
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -154,4 +155,5 @@ const startStatus: Status = {
       },
     },
   },
+  istBeendet: false,
 };

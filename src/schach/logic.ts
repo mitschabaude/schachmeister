@@ -21,6 +21,7 @@ import {
 export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld, istSchach };
 
 function istKorrekterZug(zug: Zug, status: Status) {
+  if (status.istBeendet !== false) return false;
   // man darf nur mit der farbe fahren die dran ist
   if (status.amZug !== zug.figur.farbe) return false;
 
@@ -55,6 +56,15 @@ function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
 
 function zugAnwenden(zug: Zug, status: Status): Status {
   status = zugAnwendenOhneSchach(zug, status);
+  if (istSchachmattOderPatt(andereFarbe(zug.figur.farbe), status) == "patt") {
+    status.istBeendet = "patt";
+  }
+  if (istSchachmattOderPatt(andereFarbe(zug.figur.farbe), status) == "schachmatt") {
+    status.istBeendet = "schachmatt";
+  }
+  if (istToteStellung(status)) {
+    status.istBeendet = "tote-stellung";
+  }
   status.istSchach = istSchach(status.amZug, status);
   status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
   if (zug.figur.art == "koenig") {

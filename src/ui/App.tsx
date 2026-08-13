@@ -11,10 +11,12 @@ function schreibeFarbe(farbe: Farbe) {
 }
 
 function statusNachricht(status: Status): string {
-  if (status.istSchachmattOderPatt === "schachmatt") {
+  if (status.istBeendet === "schachmatt") {
     return `Schachmatt! ${schreibeFarbe(andereFarbe(status.amZug))} hat gewonnen!`;
-  } else if (status.istSchachmattOderPatt === "patt") {
+  } else if (status.istBeendet === "patt") {
     return "Patt!";
+  } else if (status.istBeendet === "tote-stellung") {
+    return "Nicht genügend Material. Remis!";
   }
   let amZug = `${schreibeFarbe(status.amZug)} am Zug!`;
   let obIstSchach = status.istSchach ? " Schach!" : "";
