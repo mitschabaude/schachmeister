@@ -6,16 +6,15 @@ import type {
   Feld,
   Farbe,
   UmwandlungsFigurArt,
-  Figur,
   FigurMitPosition,
 } from "./types";
 import {
   andereFarbe,
-  arrayRemove,
   feldFarbe,
   figurenMitPositionen,
   selbeFigur,
   selbePosition,
+  selbeStellung,
 } from "./utils.ts";
 
 export { istKorrekterZug, istKorrekterZugOhneSchach, zugAnwenden, bauerUmwandeln, koenigsFeld, istSchach };

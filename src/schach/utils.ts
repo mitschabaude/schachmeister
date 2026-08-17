@@ -1,4 +1,4 @@
-import type { Position, Figur, Brett, Farbe, FigurMitPosition } from "./types";
+import type { Position, Figur, Brett, Farbe, FigurMitPosition, Stellung, Feld, Rochade } from "./types";
 
 export {
   assert,
@@ -9,6 +9,7 @@ export {
   andereFarbe,
   arrayRemove,
   feldFarbe,
+  selbeStellung,
 };
 
 function assert(condition: boolean, message: string): asserts condition {
@@ -65,4 +66,39 @@ function arrayRemove<T>(arr: T[], bedingung: (t: T) => boolean) {
 function feldFarbe(pos: Position): Farbe {
   if ((pos.reihe + pos.spalte) % 2 == 0) return "w";
   else return "b";
+}
+
+function selbeStellung(stellung: Stellung, stellung2: Stellung): boolean {
+  if (
+    selbesBrett(stellung.brett, stellung2.brett) &&
+    stellung.amZug == stellung2.amZug &&
+    selbesEnPassant(stellung.enpassant, stellung.enpassant) &&
+    selbeRochade(stellung.rochade, stellung2.rochade)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function selbesBrett(brett1: Brett, brett2: Brett) {
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      if (!selbesFeld(brett1[i]![j], brett2[i]![j])) return false;
+    }
+  }
+  return true;
+}
+
+function selbesFeld(feld1: Feld, feld2: Feld): boolean {
+  if (feld1 === undefined) return feld2 === undefined;
+  if (feld2 === undefined) return false;
+  return selbeFigur(feld1, feld2);
+}
+
+function selbesEnPassant(enPassant1: Position | false, enPassant2: Position | false) {
+  if (enPassant2 === false) return enPassant1 === false;
+  return selbePosition(enPassant1, enPassant2);
+}
+function selbeRochade(rochade1: Rochade, rochade2: Rochade) {
+  return false;
 }

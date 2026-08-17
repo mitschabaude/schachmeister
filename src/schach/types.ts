@@ -9,6 +9,8 @@ export type {
   Feld,
   UmwandlungsFigurArt,
   FigurMitPosition,
+  Stellung,
+  Rochade,
 };
 export { startBrett, startStatus };
 
@@ -57,7 +59,10 @@ type Status = {
   rochade: Rochade;
   istBeendet: false | "schachmatt" | "patt" | "tote-stellung" | "50-zuege-regel" | "gleiche-stellung";
   zuegeRegel: number;
+  stellungRegel: { stellung: Stellung; anzahl: number }[];
 };
+
+type Stellung = { brett: Brett; amZug: Farbe; enpassant: false | Position; rochade: Rochade };
 
 // 0 bis 7 für Reihen und Spalten
 type Position = { reihe: number; spalte: number };
@@ -155,4 +160,5 @@ const startStatus: Status = {
   },
   istBeendet: false,
   zuegeRegel: 0,
+  stellungRegel: [],
 };
