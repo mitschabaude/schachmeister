@@ -55,18 +55,16 @@ function istKorrekterZugOhneSchach(zug: Zug, status: Status): boolean {
 }
 
 function zugAnwenden(zug: Zug, status: Status): Status {
+  let schlaegt = feld(zug.nach, status.brett) !== undefined;
   status = zugAnwendenOhneSchach(zug, status);
-  if (istSchachmattOderPatt(andereFarbe(zug.figur.farbe), status) == "patt") {
-    status.istBeendet = "patt";
+  if (zug.figur.art !== "bauer" && !schlaegt) {
+    status.zuegeRegel++;
+  } else {
+    status.zuegeRegel = 0;
   }
-  if (istSchachmattOderPatt(andereFarbe(zug.figur.farbe), status) == "schachmatt") {
-    status.istBeendet = "schachmatt";
-  }
-  if (istToteStellung(status)) {
-    status.istBeendet = "tote-stellung";
-  }
+  console.log(status.zuegeRegel);
   status.istSchach = istSchach(status.amZug, status);
-  status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
+  status.istBeendet = istBeendetCheck(status);
   if (zug.figur.art == "koenig") {
     if (zug.figur.farbe == "w") {
       status.rochade.weisseRochade.linkeRochade = undefined;
@@ -94,17 +92,13 @@ function zugAnwenden(zug: Zug, status: Status): Status {
 function zugAnwendenOhneSchach(zug: Zug, status: Status): Status {
   status = structuredClone(status);
   let { weisseRochade, schwarzeRochade } = status.rochade;
-  console.log(0);
   if (istKorrekteRochade(zug, status)) {
-    console.log(1);
     if (zug.figur.art == "koenig") {
-      console.log(2);
       if (weisseRochade.linkeRochade !== undefined && selbePosition(zug.nach, weisseRochade.linkeRochade)) {
         status.brett[7][0] = undefined;
         status.brett[7][3] = { art: "turm", farbe: "w" };
       }
       if (weisseRochade.rechteRochade !== undefined && selbePosition(zug.nach, weisseRochade.rechteRochade)) {
-        console.log(3);
         status.brett[7][7] = undefined;
         status.brett[7][5] = { art: "turm", farbe: "w" };
       }
@@ -155,8 +149,16 @@ function bauerUmwandeln(figur: UmwandlungsFigurArt, status: Status): Status {
   setzeFeld(bauernUmwandlung, brett, { art: figur, farbe: bauer.farbe });
   status.bauernUmwandlung = false;
   status.istSchach = istSchach(status.amZug, status);
-  status.istSchachmattOderPatt = istSchachmattOderPatt(status.amZug, status);
+  status.istBeendet = istBeendetCheck(status);
   return status;
+}
+
+function istBeendetCheck(status: Status): Status["istBeendet"] {
+  let schachmatt = istSchachmattOderPatt(status.amZug, status);
+  if (schachmatt !== false) return schachmatt;
+  if (istToteStellung(status)) return "tote-stellung";
+  if (status.zuegeRegel == 50) return "50-zuege-regel";
+  return false;
 }
 
 function istKorrekterBauernZug(zug: Zug, status: Status): boolean {
@@ -344,7 +346,6 @@ function moeglicheFelder(status: Status, figurMitPosition: FigurMitPosition): Po
 }
 
 function istKorrekteRochade(zug: Zug, status: Status): boolean {
-  console.log("rochade", zug, status.rochade);
   if (zug.figur.farbe == "w") {
     if (selbePosition(status.rochade.weisseRochade.linkeRochade ?? false, zug.nach)) {
       if (
@@ -363,15 +364,11 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
         }
       }
     }
-    // console.log("rochade weiss", status.rochade.weisseRochade.rechteRochade, zug.nach);
     if (selbePosition(status.rochade.weisseRochade.rechteRochade ?? false, zug.nach)) {
-      console.log("weiss,rechte rochade");
       if (
         !istSchach("w", status) &&
         !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "w", status)
       ) {
-        console.log("weiss,rechte rochade 2");
-
         if (
           schlaegtNichtDurchFigur(status.brett, zug) &&
           schlaegtNichtDurchFigur(status.brett, {

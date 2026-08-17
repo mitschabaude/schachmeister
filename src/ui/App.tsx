@@ -17,6 +17,8 @@ function statusNachricht(status: Status): string {
     return "Patt!";
   } else if (status.istBeendet === "tote-stellung") {
     return "Nicht genügend Material. Remis!";
+  } else if (status.istBeendet == "50-zuege-regel") {
+    return "Zugüberschreitung. Remis!";
   }
   let amZug = `${schreibeFarbe(status.amZug)} am Zug!`;
   let obIstSchach = status.istSchach ? " Schach!" : "";

@@ -51,13 +51,12 @@ type Status = {
   amZug: Farbe;
   /** ist gerade fuer die aktuelle farbe schach? */
   istSchach: boolean;
-  /** ist gerade fuer die aktuelle farbe schachmatt? */
-  istSchachmattOderPatt: false | "schachmatt" | "patt";
   /** falls gerade ein bauer umgewandelt wird, ist dies seine position */
   bauernUmwandlung: false | Position;
   enpassant: false | Position;
   rochade: Rochade;
-  istBeendet: false | "schachmatt" | "patt" | "tote-stellung";
+  istBeendet: false | "schachmatt" | "patt" | "tote-stellung" | "50-zuege-regel" | "gleiche-stellung";
+  zuegeRegel: number;
 };
 
 // 0 bis 7 für Reihen und Spalten
@@ -130,7 +129,6 @@ const startStatus: Status = {
   brett: startBrett,
   amZug: "w",
   istSchach: false,
-  istSchachmattOderPatt: false,
   bauernUmwandlung: false,
   enpassant: false,
   rochade: {
@@ -156,4 +154,5 @@ const startStatus: Status = {
     },
   },
   istBeendet: false,
+  zuegeRegel: 0,
 };
