@@ -73,11 +73,9 @@ type Zug = {
   nach: Position;
 };
 
-type Rochade = { weisseRochade: WeisseRochade; schwarzeRochade: SchwarzeRochade };
+type EineRochade = { linkeRochade: Position | undefined; rechteRochade: Position | undefined };
 
-type WeisseRochade = { linkeRochade: Position | undefined; rechteRochade: Position | undefined };
-
-type SchwarzeRochade = { linkeRochade: Position | undefined; rechteRochade: Position | undefined };
+type Rochade = { weisseRochade: EineRochade; schwarzeRochade: EineRochade };
 
 type UmwandlungsFigurArt = "laeufer" | "pferd" | "turm" | "dame";
 
@@ -160,5 +158,36 @@ const startStatus: Status = {
   },
   istBeendet: false,
   zuegeRegel: 0,
-  stellungRegel: [],
+  stellungRegel: [
+    {
+      stellung: structuredClone({
+        brett: startBrett,
+        amZug: "w",
+        enpassant: false,
+        rochade: {
+          weisseRochade: {
+            linkeRochade: {
+              reihe: 7,
+              spalte: 2,
+            },
+            rechteRochade: {
+              reihe: 7,
+              spalte: 6,
+            },
+          },
+          schwarzeRochade: {
+            linkeRochade: {
+              reihe: 0,
+              spalte: 2,
+            },
+            rechteRochade: {
+              reihe: 0,
+              spalte: 6,
+            },
+          },
+        },
+      }),
+      anzahl: 1,
+    },
+  ],
 };

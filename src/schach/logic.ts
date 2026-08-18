@@ -85,6 +85,9 @@ function zugAnwenden(zug: Zug, status: Status): Status {
   if (selbePosition(zug.von, { reihe: 7, spalte: 7 }) || selbePosition(zug.nach, { reihe: 7, spalte: 7 })) {
     status.rochade.weisseRochade.rechteRochade = undefined;
   }
+  if (stellungZufuegen(status) == 3) {
+    status.istBeendet = "gleiche-stellung";
+  }
   return status;
 }
 
@@ -467,17 +470,28 @@ function istToteStellung(status: Status) {
   let laeufer = laeuferW.concat(laeuferB);
   laeufer.forEach((pos) => {
     if (feldFarbe(pos.pos) == "b") {
-      let obAlleWeiss = false;
+      obAlleWeiss = false;
     }
   });
 
   laeufer.forEach((pos) => {
     if (feldFarbe(pos.pos) == "w") {
-      let obAlleSchwarz = false;
+      obAlleSchwarz = false;
     }
   });
   if (obAlleSchwarz || obAlleWeiss) {
     return true;
   }
   return false;
+}
+
+function stellungZufuegen(status: Status) {
+  let stellung = status.stellungRegel.find((el) => selbeStellung(el.stellung, status));
+  if (stellung == undefined) {
+    status.stellungRegel.push({ stellung: structuredClone(status), anzahl: 1 });
+    return 1;
+  } else {
+    stellung.anzahl++;
+    return stellung.anzahl;
+  }
 }

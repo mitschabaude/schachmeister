@@ -19,6 +19,8 @@ function statusNachricht(status: Status): string {
     return "Nicht genügend Material. Remis!";
   } else if (status.istBeendet == "50-zuege-regel") {
     return "Zugüberschreitung. Remis!";
+  } else if (status.istBeendet == "gleiche-stellung") {
+    return "Dreimal die gleiche Stellung. Remis!";
   }
   let amZug = `${schreibeFarbe(status.amZug)} am Zug!`;
   let obIstSchach = status.istSchach ? " Schach!" : "";
