@@ -139,45 +139,18 @@ const startRochade: Rochade = {
   },
 };
 
-const startStatus: Status = {
+const startStellung: Stellung = {
   brett: startBrett,
   amZug: "w",
-  istSchach: false,
-  bauernUmwandlung: false,
   enpassant: false,
   rochade: startRochade,
+};
+
+const startStatus: Status = {
+  ...startStellung,
+  istSchach: false,
+  bauernUmwandlung: false,
   istBeendet: false,
   zuegeRegel: 0,
-  stellungRegel: [
-    {
-      stellung: structuredClone({
-        brett: startBrett,
-        amZug: "w",
-        enpassant: false,
-        rochade: {
-          weisseRochade: {
-            linkeRochade: {
-              reihe: 7,
-              spalte: 2,
-            },
-            rechteRochade: {
-              reihe: 7,
-              spalte: 6,
-            },
-          },
-          schwarzeRochade: {
-            linkeRochade: {
-              reihe: 0,
-              spalte: 2,
-            },
-            rechteRochade: {
-              reihe: 0,
-              spalte: 6,
-            },
-          },
-        },
-      }),
-      anzahl: 1,
-    },
-  ],
+  stellungRegel: [{ stellung: structuredClone(startStellung), anzahl: 1 }],
 };

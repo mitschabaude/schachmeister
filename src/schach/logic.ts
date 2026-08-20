@@ -350,7 +350,7 @@ function moeglicheFelder(status: Status, figurMitPosition: FigurMitPosition): Po
 
 function istKorrekteRochade(zug: Zug, status: Status): boolean {
   if (zug.figur.farbe == "w") {
-    if (selbePosition(status.rochade.weisseRochade.linkeRochade ?? false, zug.nach)) {
+    if (selbePosition(status.rochade.weisseRochade.linkeRochade, zug.nach)) {
       if (
         !istSchach("w", status) &&
         !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "w", status)
@@ -367,7 +367,7 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
         }
       }
     }
-    if (selbePosition(status.rochade.weisseRochade.rechteRochade ?? false, zug.nach)) {
+    if (selbePosition(status.rochade.weisseRochade.rechteRochade, zug.nach)) {
       if (
         !istSchach("w", status) &&
         !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "w", status)
@@ -385,7 +385,7 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
       }
     }
   } else {
-    if (selbePosition(status.rochade.schwarzeRochade.linkeRochade ?? false, zug.nach)) {
+    if (selbePosition(status.rochade.schwarzeRochade.linkeRochade, zug.nach)) {
       if (
         !istSchach("b", status) &&
         !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte - 1 }, "b", status)
@@ -402,7 +402,7 @@ function istKorrekteRochade(zug: Zug, status: Status): boolean {
         }
       }
     }
-    if (selbePosition(status.rochade.schwarzeRochade.rechteRochade ?? false, zug.nach)) {
+    if (selbePosition(status.rochade.schwarzeRochade.rechteRochade, zug.nach)) {
       if (
         !istSchach("b", status) &&
         !istSchachAufFeld({ reihe: zug.von.reihe, spalte: zug.von.spalte + 1 }, "b", status)
