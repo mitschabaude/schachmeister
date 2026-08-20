@@ -7,6 +7,7 @@ import type {
   Farbe,
   UmwandlungsFigurArt,
   FigurMitPosition,
+  Stellung,
 } from "./types";
 import {
   andereFarbe,
@@ -488,10 +489,14 @@ function istToteStellung(status: Status) {
 function stellungZufuegen(status: Status) {
   let stellung = status.stellungRegel.find((el) => selbeStellung(el.stellung, status));
   if (stellung == undefined) {
-    status.stellungRegel.push({ stellung: structuredClone(status), anzahl: 1 });
+    status.stellungRegel.push({ stellung: statusZuStellung(status), anzahl: 1 });
     return 1;
   } else {
     stellung.anzahl++;
     return stellung.anzahl;
   }
+}
+
+function statusZuStellung({ brett, amZug, enpassant, rochade }: Status): Stellung {
+  return structuredClone({ brett, amZug, enpassant, rochade });
 }

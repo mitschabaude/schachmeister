@@ -128,34 +128,24 @@ const startBrett: Brett = [
   ],
 ];
 
+const startRochade: Rochade = {
+  weisseRochade: {
+    linkeRochade: { reihe: 7, spalte: 2 },
+    rechteRochade: { reihe: 7, spalte: 6 },
+  },
+  schwarzeRochade: {
+    linkeRochade: { reihe: 0, spalte: 2 },
+    rechteRochade: { reihe: 0, spalte: 6 },
+  },
+};
+
 const startStatus: Status = {
   brett: startBrett,
   amZug: "w",
   istSchach: false,
   bauernUmwandlung: false,
   enpassant: false,
-  rochade: {
-    weisseRochade: {
-      linkeRochade: {
-        reihe: 7,
-        spalte: 2,
-      },
-      rechteRochade: {
-        reihe: 7,
-        spalte: 6,
-      },
-    },
-    schwarzeRochade: {
-      linkeRochade: {
-        reihe: 0,
-        spalte: 2,
-      },
-      rechteRochade: {
-        reihe: 0,
-        spalte: 6,
-      },
-    },
-  },
+  rochade: startRochade,
   istBeendet: false,
   zuegeRegel: 0,
   stellungRegel: [
